@@ -1,0 +1,37 @@
+Load map
+========
+
+Module:  skyscrapers.obj
+ Text segment:  308 bytes, load point 0x00400000
+ Data segment:  280 bytes, load point 0x10000000
+ Symbols:
+                       Name Section Mode    Value
+            plus_char_break   Data   R   0x10000106
+                      board   Data   R   0x10000001
+           board_space_back   Data   R   0x10000110
+       print_board_loop_col   Text   R   0x00400078
+                 board_size   Data   R   0x10000000
+  print_board_loop_col_done   Text   R   0x0040009c
+            print_break_row   Text   R   0x004000c8
+       print_break_row_loop   Text   R   0x004000ec
+               PRINT_STRING          A   0x00000004
+               print_string   Text   R   0x0040011c
+                       main   Text   R   0x00400000
+            board_space_mid   Data   R   0x1000010c
+                print_board   Text   R   0x00400030
+       print_board_loop_row   Text   R   0x00400060
+               print_number   Text   R   0x00400128
+              new_line_char   Data   R   0x10000114
+          board_space_front   Data   R   0x10000109
+                       EXIT          A   0x0000000a
+       board_row_break_part   Data   R   0x10000101
+                  PRINT_INT          A   0x00000001
+           print_board_done   Text   R   0x004000a8
+       print_break_row_done   Text   R   0x00400104
+
+Module:  r2k_startup.obj
+ Text segment:  36 bytes, load point 0x00400134
+ Symbols:
+                       Name Section Mode    Value
+                  SYS_EXIT2          A   0x00000011
+             __r2k__entry__   Text   RG  0x00400138
