@@ -1,214 +1,420 @@
    1 0000               
    2 0000               
    3 0000               
-   4 0000               
-   5 0000               
-   6 0000               PRINT_INT = 1
-   7 0000               PRINT_STRING = 4
-   8 0000               EXIT = 10
-   9 0000               
-  10 0000               	.data
-  11 0000               	.align	0
+   4 0000               PRINT_INT = 1
+   5 0000               PRINT_STRING = 4
+   6 0000               EXIT = 10
+   7 0000               
+   8 0000               	.data
+   9 0000               	.align	0
+  10 0000               
+  11 0000               
   12 0000               
-  13 0000               
-  14 0000               
-  15 0000               board_size:
-  16 0000 00      		.byte	0
-  17 0001               board:
-  18 0001 00000000		.space	256	#64 bytes to handle max size board
+  13 0000               board_size:
+  14 0000 00      		.byte	0
+  15 0001               board:
+  16 0001 00000000		.space	256
           00000000
           00000000
           00000000
           00000000
           00000000
-  19 0101               
-  20 0101               board_row_break_part:
-  21 0101 2B2D2D2D		.asciiz "+---"
+  17 0101               north_hints:
+  18 0101 00000000		.space	32
+          00000000
+          00000000
+          00000000
+          00000000
+          00000000
+  19 0121               south_hints:
+  20 0121 00000000		.space	32
+          00000000
+          00000000
+          00000000
+          00000000
+          00000000
+  21 0141               east_hints:
+  22 0141 00000000		.space	32
+          00000000
+          00000000
+          00000000
+          00000000
+          00000000
+  23 0161               west_hints:
+  24 0161 00000000		.space	32
+          00000000
+          00000000
+          00000000
+          00000000
+          00000000
+  25 0181               
+  26 0181               board_row_break_part:
+  27 0181 2B2D2D2D		.asciiz "+---"
           00      
-  22 0106               plus_char_break:
-  23 0106 2B0A00  		.asciiz "+\n"
-  24 0109               board_space_front:
-  25 0109 7C2000  		.asciiz "| "
-  26 010c               board_space_mid:
-  27 010c 207C2000		.asciiz " | "
-  28 0110               board_space_back:
-  29 0110 207C0A00		.asciiz " |\n"
-  30 0114               new_line_char:
-  31 0114 0A00    		.asciiz "\n"
-  32 0116               
-  33 0116               
-  34 0000               	.text
-  35 0000               	.align	2
-  36 0000               
-  37 0000               
-  38 0000               
-  39 0000               main:
-  40 0000 23BDFFF8		addi	$sp, $sp, -8
-  41 0004 AFBF0004		sw	$ra, 4($sp)
-  42 0008 AFB00000		sw	$s0, 0($sp)
-  43 000c               	
-  44 000c 3C080000		la	$t0, board_size
+  28 0186               plus_char_break:
+  29 0186 2B0A00  		.asciiz "+\n"
+  30 0189               board_space_front:
+  31 0189 7C2000  		.asciiz "| "
+  32 018c               board_space_mid:
+  33 018c 207C2000		.asciiz " | "
+  34 0190               board_space_back:
+  35 0190 207C0A00		.asciiz " |\n"
+  36 0194               new_line_char:
+  37 0194 0A00    		.asciiz "\n"
+  38 0196               spacesss:
+  39 0196 20202000		.asciiz "   "
+  40 019a               spacess:
+  41 019a 202000  		.asciiz "  "
+  42 019d               spaces:
+  43 019d 2000    		.asciiz " "
+  44 019f               
+  45 0000               	.text
+  46 0000               	.align	2
+  47 0000               
+  48 0000               ##################################################
+  49 0000               #              Program area                      #
+  50 0000               ##################################################
+  51 0000               
+  52 0000               
+  53 0000               #
+  54 0000               # Name: Main
+  55 0000               #
+  56 0000               main:
+  57 0000 23BDFFF8		addi	$sp, $sp, -8
+  58 0004 AFBF0004		sw	$ra, 4($sp)
+  59 0008 AFB00000		sw	$s0, 0($sp)
+  60 000c               	
+  61 000c 3C080000		la	$t0, board_size
      0010 35080000
-  45 0014 34090003		li	$t1, 3
-  46 0018               
-  47 0018 A1090000		sb	$t1, 0($t0)
-  48 001c               
-  49 001c 0C00000C		jal	print_board
-  50 0020               
-  51 0020 8FBF0004		lw	$ra, 4($sp)
-  52 0024 8FB00000		lw	$s0, 0($sp)
-  53 0028 23BD0008		addi	$sp, $sp, 8
-  54 002c 03E00008		jr	$ra
-  55 0030               
-  56 0030               
-  57 0030               print_board:
-  58 0030               	
-  59 0030 23BDFFEC		addi	$sp, $sp, -20
-  60 0034 AFBF0010		sw	$ra, 16($sp)
-  61 0038 AFB3000C		sw	$s3, 12($sp)
-  62 003c AFB20008		sw	$s2, 8($sp)
-  63 0040 AFB10004		sw	$s1, 4($sp)
-  64 0044 AFB00000		sw	$s0, 0($sp)
-  65 0048               	
-  66 0048 3C100000		la	$s0, board_size
-     004c 36100000
-  67 0050 82100000		lb	$s0, 0($s0)
-  68 0054 3C110000		la	$s1, board
-     0058 36310000
-  69 005c 34120000		li	$s2, 0
-  70 0060               
-  71 0060               print_board_loop_row:
-  72 0060               
-  73 0060 12500011		beq	$s2, $s0, print_board_done
-  74 0064               
-  75 0064 0C000032		jal	print_break_row
-  76 0068               
-  77 0068 3C040000		la	$a0, board_space_front
-     006c 34840000
-  78 0070 0C000047		jal	print_string
-  79 0074               	
-  80 0074               
-  81 0074 00009821		move	$s3, $zero
-  82 0078               
-  83 0078               print_board_loop_col:
-  84 0078               
-  85 0078 12700008		beq	$s3, $s0, print_board_loop_col_done
-  86 007c               
-  87 007c 02718820		add	$s1, $s3, $s1
-  88 0080               
-  89 0080 82240000		lb	$a0, 0($s1)
-  90 0084 0C00004A		jal	print_number
-  91 0088               
-  92 0088 3C040000		la	$a0, board_space_mid
-     008c 34840000
-  93 0090 0C000047		jal	print_string
-  94 0094               	
-  95 0094 22730001		addi	$s3, $s3, 1
-  96 0098 0800001E		j	print_board_loop_col
-  97 009c               	
-  98 009c               print_board_loop_col_done:
-  99 009c 22310004		addi	$s1, $s1, 4
- 100 00a0 22520001		addi	$s2, $s2, 1
- 101 00a4 08000018		j	print_board_loop_row
- 102 00a8               
- 103 00a8               print_board_done:
- 104 00a8               
- 105 00a8 0C000032		jal	print_break_row
- 106 00ac               
- 107 00ac 8FBF0010		lw	$ra, 16($sp)
- 108 00b0 8FB3000C		lw	$s3, 12($sp)
- 109 00b4 8FB20008		lw	$s2, 8($sp)
- 110 00b8 8FB10004		lw	$s1, 4($sp)
- 111 00bc 8FB00000		lw	$s0, 0($sp)
- 112 00c0 23BD0014		addi	$sp, $sp, 20
- 113 00c4 03E00008		jr	$ra
- 114 00c8               
- 115 00c8               
- 116 00c8               
- 117 00c8               
- 118 00c8               print_break_row:
- 119 00c8               	
- 120 00c8 23BDFFFC		addi	$sp, $sp, -4
- 121 00cc AFBF0000		sw	$ra, 0($sp)
- 122 00d0               
- 123 00d0 3C040000		la	$a0, new_line_char
-     00d4 34840000
- 124 00d8 0C000047		jal	print_string
- 125 00dc               	
- 126 00dc 3C090000		la      $t1, board_size
-     00e0 35290000
- 127 00e4 81290000		lb      $t1, 0($t1)
- 128 00e8               
- 129 00e8 34080000		li	$t0, 0
- 130 00ec               
- 131 00ec               
- 132 00ec               print_break_row_loop:
- 133 00ec               	
- 134 00ec 11280005		beq	$t1, $t0, print_break_row_done
- 135 00f0               
- 136 00f0 3C040000		la	$a0, board_row_break_part
-     00f4 34840000
- 137 00f8 0C000047		jal	print_string
- 138 00fc               
- 139 00fc 21080001		addi	$t0, $t0, 1
- 140 0100               
- 141 0100 0800003B		j	print_break_row_loop
- 142 0104               
- 143 0104               print_break_row_done:
- 144 0104 3C040000		la	$a0, plus_char_break
-     0108 34840000
- 145 010c 0C000047		jal	print_string
- 146 0110               	
- 147 0110 8FBF0000		lw	$ra, 0($sp)
- 148 0114 23BD0004		addi	$sp, $sp, 4
- 149 0118               	
- 150 0118 03E00008		jr	$ra
- 151 011c               
- 152 011c               	
- 153 011c               
- 154 011c               
- 155 011c               print_string:
- 156 011c 34020004		li	$v0, PRINT_STRING
- 157 0120 0000000C		syscall
- 158 0124               
- 159 0124 03E00008		jr	$ra
- 160 0128               
- 161 0128               print_number:
- 162 0128 34020001		li	$v0, PRINT_INT
- 163 012c 0000000C		syscall
- 164 0130               
- 165 0130 03E00008		jr	$ra
- 166 0134               
- 167 0134               
- 168 0134               
- 169 0134               
- 170 0134               
- 171 0134               
- 172 0134               
- 173 0134               
- 174 0134               
- 175 0134               
+  62 0014 34090005		li	$t1, 5
+  63 0018               
+  64 0018 A1090000		sb	$t1, 0($t0)	
+  65 001c               
+  66 001c 0C00001B		jal	print_board
+  67 0020               
+  68 0020               main_done:
+  69 0020 8FBF0004		lw	$ra, 4($sp)
+  70 0024 8FB00000		lw	$s0, 0($sp)
+  71 0028 23BD0008		addi	$sp, $sp, 8
+  72 002c 03E00008		jr	$ra
+  73 0030               
+  74 0030               
+  75 0030               
+  76 0030               
+  77 0030               #
+  78 0030               # Name: get_x_hint
+  79 0030               #
+  80 0030               # Arguments: 
+  81 0030               #     $a0: index
+  82 0030               #
+  83 0030               get_north_hint:
+  84 0030 3C050000		la	$a1, north_hints
+     0034 34A50000
+  85 0038 08000018		j	get_hint
+  86 003c               get_south_hint:
+  87 003c 3C050000		la	$a1, south_hints
+     0040 34A50000
+  88 0044 08000018		j	get_hint
+  89 0048               get_east_hint:
+  90 0048 3C050000		la	$a1, east_hints
+     004c 34A50000
+  91 0050 08000018		j	get_hint
+  92 0054               get_west_hint:
+  93 0054 3C050000		la	$a1, west_hints
+     0058 34A50000
+  94 005c 08000018		j	get_hint
+  95 0060               get_hint:
+  96 0060 00852820		add	$a1, $a0, $a1
+  97 0064 80A20000		lb	$v0, 0($a1)
+  98 0068 03E00008		jr	$ra
+  99 006c               
+ 100 006c               
+ 101 006c               
+ 102 006c               
+ 103 006c               
+ 104 006c               
+ 105 006c               
+ 106 006c               
+ 107 006c               
+ 108 006c               
+ 109 006c               
+ 110 006c               
+ 111 006c               
+ 112 006c               
+ 113 006c               
+ 114 006c               #####################################################
+ 115 006c               #             Print functions below                 #
+ 116 006c               #####################################################
+ 117 006c               
+ 118 006c               #
+ 119 006c               # Name: print board
+ 120 006c               #
+ 121 006c               print_board:
+ 122 006c               	
+ 123 006c 23BDFFEC		addi	$sp, $sp, -20
+ 124 0070 AFBF0010		sw	$ra, 16($sp)
+ 125 0074 AFB3000C		sw	$s3, 12($sp)
+ 126 0078 AFB20008		sw	$s2, 8($sp)
+ 127 007c AFB10004		sw	$s1, 4($sp)
+ 128 0080 AFB00000		sw	$s0, 0($sp)
+ 129 0084               	
+ 130 0084 3C100000		la	$s0, board_size
+     0088 36100000
+ 131 008c 82100000		lb	$s0, 0($s0)
+ 132 0090 3C110000		la	$s1, board
+     0094 36310000
+ 133 0098 34120000		li	$s2, 0
+ 134 009c               
+ 135 009c 3C040000		la	$a0, north_hints
+     00a0 34840000
+ 136 00a4 0C000075		jal	print_x_hints
+ 137 00a8               
+ 138 00a8               print_board_loop_row:
+ 139 00a8               
+ 140 00a8 1250001C		beq	$s2, $s0, print_board_done
+ 141 00ac               
+ 142 00ac 0C000055		jal	print_break_row
+ 143 00b0               
+ 144 00b0 3C040000		la	$a0, west_hints
+     00b4 34840000
+ 145 00b8 02402821		move	$a1, $s2
+ 146 00bc 0C00006D		jal	print_y_hint
+ 147 00c0               	
+ 148 00c0 3C040000		la	$a0, spaces
+     00c4 34840000
+ 149 00c8 0C00008B		jal	print_string
+ 150 00cc               
+ 151 00cc 3C040000		la	$a0, board_space_front
+     00d0 34840000
+ 152 00d4 0C00008B		jal	print_string
+ 153 00d8               	
+ 154 00d8               
+ 155 00d8 00009821		move	$s3, $zero
+ 156 00dc               
+ 157 00dc               
+ 158 00dc               print_board_loop_col:
+ 159 00dc               
+ 160 00dc 12700008		beq	$s3, $s0, print_board_loop_col_done
+ 161 00e0               
+ 162 00e0 02718820		add	$s1, $s3, $s1
+ 163 00e4               
+ 164 00e4 82240000		lb	$a0, 0($s1)
+ 165 00e8 0C00008E		jal	print_number
+ 166 00ec               
+ 167 00ec 3C040000		la	$a0, board_space_mid
+     00f0 34840000
+ 168 00f4 0C00008B		jal	print_string
+ 169 00f8               	
+ 170 00f8 22730001		addi	$s3, $s3, 1
+ 171 00fc 08000037		j	print_board_loop_col
+ 172 0100               	
+ 173 0100               print_board_loop_col_done:
+ 174 0100 22310004		addi	$s1, $s1, 4
+ 175 0104 22520001		addi	$s2, $s2, 1
+ 176 0108               	
+ 177 0108 3C040000		la	$a0, east_hints
+     010c 34840000
+ 178 0110 02402821		move	$a1, $s2
+ 179 0114 0C00006D		jal	print_y_hint
+ 180 0118               	
+ 181 0118               	
+ 182 0118 0800002A		j	print_board_loop_row
+ 183 011c               
+ 184 011c               print_board_done:
+ 185 011c               
+ 186 011c 0C000055		jal	print_break_row
+ 187 0120               
+ 188 0120 3C040000		la	$a0, south_hints
+     0124 34840000
+ 189 0128 0C000075		jal	print_x_hints
+ 190 012c               	
+ 191 012c 3C040000		la	$a0, new_line_char
+     0130 34840000
+ 192 0134 0C00008B		jal	print_string
+ 193 0138               
+ 194 0138 8FBF0010		lw	$ra, 16($sp)
+ 195 013c 8FB3000C		lw	$s3, 12($sp)
+ 196 0140 8FB20008		lw	$s2, 8($sp)
+ 197 0144 8FB10004		lw	$s1, 4($sp)
+ 198 0148 8FB00000		lw	$s0, 0($sp)
+ 199 014c 23BD0014		addi	$sp, $sp, 20
+ 200 0150 03E00008		jr	$ra
+ 201 0154               
+ 202 0154               
+ 203 0154               
+ 204 0154               #
+ 205 0154               # Name: Print break row
+ 206 0154               #
+ 207 0154               print_break_row:
+ 208 0154               	
+ 209 0154 23BDFFFC		addi	$sp, $sp, -4
+ 210 0158 AFBF0000		sw	$ra, 0($sp)
+ 211 015c               
+ 212 015c 3C040000		la	$a0, new_line_char
+     0160 34840000
+ 213 0164 0C00008B		jal	print_string
+ 214 0168               
+ 215 0168 3C040000		la	$a0, spacess
+     016c 34840000
+ 216 0170 0C00008B		jal	print_string
+ 217 0174               	
+ 218 0174 3C090000		la      $t1, board_size
+     0178 35290000
+ 219 017c 81290000		lb      $t1, 0($t1)
+ 220 0180               
+ 221 0180 34080000		li	$t0, 0
+ 222 0184               
+ 223 0184               
+ 224 0184               print_break_row_loop:
+ 225 0184               	
+ 226 0184 11280005		beq	$t1, $t0, print_break_row_done
+ 227 0188               
+ 228 0188 3C040000		la	$a0, board_row_break_part
+     018c 34840000
+ 229 0190 0C00008B		jal	print_string
+ 230 0194               
+ 231 0194 21080001		addi	$t0, $t0, 1
+ 232 0198               
+ 233 0198 08000061		j	print_break_row_loop
+ 234 019c               
+ 235 019c               print_break_row_done:
+ 236 019c 3C040000		la	$a0, plus_char_break
+     01a0 34840000
+ 237 01a4 0C00008B		jal	print_string
+ 238 01a8               	
+ 239 01a8 8FBF0000		lw	$ra, 0($sp)
+ 240 01ac 23BD0004		addi	$sp, $sp, 4
+ 241 01b0               	
+ 242 01b0 03E00008		jr	$ra
+ 243 01b4               
+ 244 01b4               
+ 245 01b4               #
+ 246 01b4               # Name: print y hint
+ 247 01b4               #
+ 248 01b4               # Arguments:
+ 249 01b4               #    $a0: pointer to array
+ 250 01b4               #    $a1: index
+ 251 01b4               #
+ 252 01b4               print_y_hint:
+ 253 01b4 23BDFFFC		addi	$sp, $sp, -4
+ 254 01b8 AFBF0000		sw	$ra, 0($sp)
+ 255 01bc               
+ 256 01bc 00852020		add	$a0, $a0, $a1
+ 257 01c0 80840000		lb	$a0, 0($a0)
+ 258 01c4 0C00008E		jal	print_number
+ 259 01c8               
+ 260 01c8 8FBF0000		lw	$ra, 0($sp)
+ 261 01cc 23BD0004		addi	$sp, $sp, 4
+ 262 01d0 03E00008		jr	$ra
+ 263 01d4               
+ 264 01d4               
+ 265 01d4               
+ 266 01d4               #
+ 267 01d4               # Name: prints x axis hints
+ 268 01d4               #
+ 269 01d4               # Arguments: 
+ 270 01d4               #     $a0: pointer to hint array
+ 271 01d4               #
+ 272 01d4               print_x_hints:
+ 273 01d4 23BDFFFC		addi	$sp, $sp, -4
+ 274 01d8 AFBF0000		sw	$ra, 0($sp)
+ 275 01dc               	
+ 276 01dc 00805021		move	$t2, $a0
+ 277 01e0               
+ 278 01e0 3C090000		la      $t1, board_size
+     01e4 35290000
+ 279 01e8 81290000		lb      $t1, 0($t1)
+ 280 01ec               
+ 281 01ec 34080000		li	$t0, 0
+ 282 01f0               	
+ 283 01f0 3C040000		la	$a0, spaces
+     01f4 34840000
+ 284 01f8 0C00008B		jal	print_string
+ 285 01fc               
+ 286 01fc               print_x_hints_loop:
+ 287 01fc               	
+ 288 01fc 11280008		beq	$t1, $t0, print_x_hints_done
+ 289 0200               	
+ 290 0200 3C040000		la	$a0, spacesss
+     0204 34840000
+ 291 0208 0C00008B		jal	print_string
+ 292 020c               
+ 293 020c 81440000		lb	$a0, 0($t2)
+ 294 0210 0C00008E		jal	print_number
+ 295 0214               
+ 296 0214 214A0001		addi	$t2, $t2, 1
+ 297 0218 21080001		addi	$t0, $t0, 1
+ 298 021c               
+ 299 021c 0800007F		j	print_x_hints_loop
+ 300 0220               
+ 301 0220               print_x_hints_done:
+ 302 0220               	
+ 303 0220 8FBF0000		lw	$ra, 0($sp)
+ 304 0224 23BD0004		addi	$sp, $sp, 4
+ 305 0228               	
+ 306 0228 03E00008		jr	$ra
+ 307 022c               
+ 308 022c               
+ 309 022c               
+ 310 022c               print_string:
+ 311 022c 34020004		li	$v0, PRINT_STRING
+ 312 0230 0000000C		syscall
+ 313 0234               
+ 314 0234 03E00008		jr	$ra
+ 315 0238               
+ 316 0238               print_number:
+ 317 0238 34020001		li	$v0, PRINT_INT
+ 318 023c 0000000C		syscall
+ 319 0240               
+ 320 0240 03E00008		jr	$ra
+ 321 0244               
+ 322 0244               
+ 323 0244               
+ 324 0244               
+ 325 0244               
+ 326 0244               
+ 327 0244               
+ 328 0244               
+ 329 0244               
+ 330 0244               
 
 
 EXIT                       = 0000000A   
 PRINT_INT                  = 00000001   
 PRINT_STRING               = 00000004   
 board                        00000001 R  data 
-board_row_break_part         00000101 R  data 
+board_row_break_part         00000181 R  data 
 board_size                   00000000 R  data 
-board_space_back             00000110 R  data 
-board_space_front            00000109 R  data 
-board_space_mid              0000010C R  data 
+board_space_back             00000190 R  data 
+board_space_front            00000189 R  data 
+board_space_mid              0000018C R  data 
+east_hints                   00000141 R  data 
+get_east_hint                00000048 R  text 
+get_hint                     00000060 R  text 
+get_north_hint               00000030 R  text 
+get_south_hint               0000003C R  text 
+get_west_hint                00000054 R  text 
 main                         00000000 R  text 
-new_line_char                00000114 R  data 
-plus_char_break              00000106 R  data 
-print_board                  00000030 R  text 
-print_board_done             000000A8 R  text 
-print_board_loop_col         00000078 R  text 
-print_board_loop_col_done    0000009C R  text 
-print_board_loop_row         00000060 R  text 
-print_break_row              000000C8 R  text 
-print_break_row_done         00000104 R  text 
-print_break_row_loop         000000EC R  text 
-print_number                 00000128 R  text 
-print_string                 0000011C R  text 
+main_done                    00000020 R  text 
+new_line_char                00000194 R  data 
+north_hints                  00000101 R  data 
+plus_char_break              00000186 R  data 
+print_board                  0000006C R  text 
+print_board_done             0000011C R  text 
+print_board_loop_col         000000DC R  text 
+print_board_loop_col_done    00000100 R  text 
+print_board_loop_row         000000A8 R  text 
+print_break_row              00000154 R  text 
+print_break_row_done         0000019C R  text 
+print_break_row_loop         00000184 R  text 
+print_number                 00000238 R  text 
+print_string                 0000022C R  text 
+print_x_hints                000001D4 R  text 
+print_x_hints_done           00000220 R  text 
+print_x_hints_loop           000001FC R  text 
+print_y_hint                 000001B4 R  text 
+south_hints                  00000121 R  data 
+spaces                       0000019D R  data 
+spacess                      0000019A R  data 
+spacesss                     00000196 R  data 
+west_hints                   00000161 R  data 

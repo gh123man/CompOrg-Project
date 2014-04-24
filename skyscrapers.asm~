@@ -59,7 +59,7 @@ main:
 	sw	$s0, 0($sp)
 	
 	la	$t0, board_size
-	li	$t1, 3	#size
+	li	$t1, 5
 
 	sb	$t1, 0($t0)	
 
@@ -198,6 +198,7 @@ print_board_done:
 	lw	$s0, 0($sp)
 	addi	$sp, $sp, 20
 	jr	$ra
+
 
 
 #
