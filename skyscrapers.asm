@@ -45,7 +45,14 @@ spaces:
 	
 board_input_error:
 	.asciiz "\nInvalid board size, Skyscrapers terminating\n"
-
+illegal_input_error:
+	.asciiz "Illegal input value, Skyscrapers terminating\n"
+fixed_number_input_error:
+	.asciiz "Invalid number of fixed values, Skyscrapers terminating\n"
+fixed_input_error:
+	.asciiz "Illegal fixed input values, Skyscrapers terminating\n"
+	
+	
 	.text
 	.align	2
 
@@ -64,7 +71,7 @@ main:
 	
 	jal	read_input
 	beq	$v0, $zero, main_done	#end if it returned false. 
-
+	
 	jal	print_board
 
 main_done:
@@ -73,7 +80,28 @@ main_done:
 	addi	$sp, $sp, 8
 	jr	$ra
 
-
+#
+# Name: write_board
+#
+# Arguments:
+#    a0: x index
+#    a1: y index
+#    a2: value
+#
+write_board:
+	la	$t0, board_size
+	lb	$t0, 0($t0)
+	#t0 has board width
+	
+	mul	$t0, $t0, $a1
+	add	$t0, $t0, $a0
+	
+	la	$t1, board
+	add	$t0, $t1, $t0
+	sb	$a2, 0($t0)
+	
+	jr	$ra
+	
 
 
 #
@@ -103,6 +131,9 @@ get_hint:
 #               Data Input Functions                #
 #####################################################
 
+#
+# Name: read_input
+#
 read_input:
 	addi	$sp, $sp, -8
 	sw	$ra, 4($sp)
@@ -128,21 +159,38 @@ read_input:
 	la	$a0, north_hints
 	move	$a1, $s0
 	jal	load_hints
+	beq	$v0, $zero, read_input_error
+	
 	
 	la	$a0, east_hints
 	move	$a1, $s0
 	jal	load_hints
+	beq	$v0, $zero, read_input_error
 
 
 	la	$a0, south_hints
 	move	$a1, $s0
 	jal	load_hints
+	beq	$v0, $zero, read_input_error
 
 
 	la	$a0, west_hints
 	move	$a1, $s0
 	jal	load_hints
-
+	beq	$v0, $zero, read_input_error
+	
+	
+	
+	li	$v0, READ_INT
+	syscall
+	
+	la	$a0, fixed_input_error
+	blt	$v0, $zero, read_input_error
+	
+	move	$a0, $v0
+	move	$a1, $s0
+	jal	load_fixed
+	
 
 
 	#all input is good
@@ -161,8 +209,97 @@ read_input_end:
 	addi	$sp, $sp, 8
 	jr	$ra
 
+
+
+
+
+
+
+#
+# Name: load_fixed
+#
+# Arguments: 
+#    $a0: num of fixed towers
+#    $a1: board Size
+#
+load_fixed:
+	addi	$sp, $sp, -16
+	sw	$ra, 12($sp)
+	sw	$s2, 8($sp)
+	sw	$s1, 4($sp)
+	sw	$s0, 0($sp)
+	
+	move	$s0, $a0	#s0 contains number of fixed towers
+	li	$s1, 0		#conter
+	move	$s2, $a1
+	
+	li	$v0, 1
+	
+read_fixed_loop:
+
+	beq	$s1, $s0, load_fixed_done
+	
+	#load x
+	li	$v0, READ_INT
+	syscall
+	move	$t0, $v0
+	
+	#load y
+	li	$v0, READ_INT
+	syscall
+	move	$t1, $v0
+	
+	#load value
+	li	$v0, READ_INT
+	syscall
+	move	$t2, $v0
+	
+	blt	$t0, $zero, size_fixed_error
+	blt	$s2, $t0, size_fixed_error
+	
+	blt	$t1, $zero, size_fixed_error
+	blt	$s2, $t1, size_fixed_error
+	
+	blt	$t3, $zero, size_fixed_error
+	blt	$s2, $t3, size_fixed_error
+	
+	move	$a0, $t0
+	move	$a1, $t1
+	move	$a2, $t2
+	jal	write_board
+	
+	
+	addi	$s1, $s1, 1
+	j	read_fixed_loop	
+
+size_fixed_error:
+	
+	la	$a0, fixed_input_error
+	li	$v0, 0
+	j	load_hints_done
+	
+load_fixed_done:
+	lw	$ra, 12($sp)
+	lw	$s2, 8($sp)
+	lw	$s1, 4($sp)
+	lw	$s0, 0($sp)
+	addi	$sp, $sp, 16
+	jr	$ra
+
+
+
+
+
+
 	
 
+#
+# Name: load_hints
+#
+# Arguments: 
+#    $a0: hint array pointer
+#    $a1: board size
+#
 load_hints:
 	addi	$sp, $sp, -12
 	sw	$ra, 8($sp)
@@ -173,12 +310,17 @@ load_hints:
 	move	$s1, $a1
 	
 	li	$t0, 0		#counter
+	li	$v0, 1
 read_input_loop:
 	
 	beq	$t0, $s1, load_hints_done
 	
 	li	$v0, READ_INT
 	syscall
+	
+	blt	$v0, $zero, size_input_error
+	blt	$s1, $v0, size_input_error
+	
 	
 	sb	$v0, 0($s0)
 	addi	$s0, $s0, 1
@@ -187,13 +329,19 @@ read_input_loop:
 	j	read_input_loop
 
 	
+size_input_error:
+	
+	la	$a0, illegal_input_error
+	li	$v0, 0
+	j	load_hints_done
+	
 load_hints_done:
 	lw	$ra, 8($sp)
 	lw	$s1, 4($sp)
 	lw	$s0, 0($sp)
 	addi	$sp, $sp, 12
 	jr	$ra
-
+	
 	
 	
 	
@@ -216,7 +364,7 @@ print_board:
 	
 	la	$s0, board_size
 	lb	$s0, 0($s0)
-	la	$s1, board
+	la	$s1, board		#s1 contains board pointer
 	li	$s2, 0
 
 	la	$a0, north_hints
@@ -226,11 +374,11 @@ print_board_loop_row:
 
 	beq	$s2, $s0, print_board_done
 
-	jal	print_break_row
+	jal	print_break_row		#print break
 
 	la	$a0, west_hints
 	move	$a1, $s2
-	jal	print_y_hint
+	jal	print_y_hint		#print y hint
 	
 	la	$a0, spaces
 	jal	print_string
@@ -246,8 +394,6 @@ print_board_loop_col:
 
 	beq	$s3, $s0, print_board_loop_col_done
 
-	add	$s1, $s3, $s1
-
 	lb	$a0, 0($s1)
 	jal	print_number
 
@@ -255,6 +401,7 @@ print_board_loop_col:
 	jal	print_string
 	
 	addi	$s3, $s3, 1
+	addi	$s1, $s1, 1
 	j	print_board_loop_col
 	
 print_board_loop_col_done:
@@ -263,7 +410,7 @@ print_board_loop_col_done:
 	move	$a1, $s2
 	jal	print_y_hint
 	
-	addi	$s1, $s1, 4
+	#addi	$s1, $s1, 1
 	addi	$s2, $s2, 1
 	
 	j	print_board_loop_row
