@@ -224,8 +224,9 @@ read_input_end:
 #    $a1: board Size
 #
 load_fixed:
-	addi	$sp, $sp, -16
-	sw	$ra, 12($sp)
+	addi	$sp, $sp, -20
+	sw	$ra, 16($sp)
+	sw	$s3, 12($sp)
 	sw	$s2, 8($sp)
 	sw	$s1, 4($sp)
 	sw	$s0, 0($sp)
@@ -234,7 +235,7 @@ load_fixed:
 	li	$s1, 0		#conter
 	move	$s2, $a1
 	
-	li	$v0, 1
+	li	$s3, 1
 	
 read_fixed_loop:
 
@@ -277,15 +278,17 @@ read_fixed_loop:
 size_fixed_error:
 	
 	la	$a0, fixed_input_error
-	li	$v0, 0
+	li	$s3, 0
 	j	load_fixed_done
 	
 load_fixed_done:
-	lw	$ra, 12($sp)
+	move	$v0, $s3
+	lw	$ra, 16($sp)
+	lw	$s3, 12($sp)
 	lw	$s2, 8($sp)
 	lw	$s1, 4($sp)
 	lw	$s0, 0($sp)
-	addi	$sp, $sp, 16
+	addi	$sp, $sp, 20
 	jr	$ra
 
 
@@ -303,8 +306,9 @@ load_fixed_done:
 #    $a1: board size
 #
 load_hints:
-	addi	$sp, $sp, -12
-	sw	$ra, 8($sp)
+	addi	$sp, $sp, -16
+	sw	$ra, 12($sp)
+	sw	$s2, 8($sp)
 	sw	$s1, 4($sp)
 	sw	$s0, 0($sp)
 	
@@ -312,7 +316,7 @@ load_hints:
 	move	$s1, $a1
 	
 	li	$t0, 0		#counter
-	li	$v0, 1
+	li	$s3, 1
 read_input_loop:
 	
 	beq	$t0, $s1, load_hints_done
@@ -334,14 +338,16 @@ read_input_loop:
 size_input_error:
 	
 	la	$a0, illegal_input_error
-	li	$v0, 0
+	li	$s3, 0
 	j	load_hints_done
 	
 load_hints_done:
-	lw	$ra, 8($sp)
+	move	$v0, $s3
+	lw	$ra, 12($sp)
+	lw	$s1, 8($sp)
 	lw	$s1, 4($sp)
 	lw	$s0, 0($sp)
-	addi	$sp, $sp, 12
+	addi	$sp, $sp, 16
 	jr	$ra
 	
 	

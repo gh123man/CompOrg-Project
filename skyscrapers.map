@@ -2,54 +2,54 @@ Load map
 ========
 
 Module:  skyscrapers.obj
- Text segment:  1136 bytes, load point 0x00400000
+ Text segment:  1160 bytes, load point 0x00400000
  Data segment:  624 bytes, load point 0x10000000
  Symbols:
                        Name Section Mode    Value
            read_input_error   Text   R   0x00400154
-                 load_hints   Text   R   0x0040022c
+                 load_hints   Text   R   0x00400238
                  west_hints   Data   R   0x10000161
                 north_hints   Data   R   0x10000101
               get_east_hint   Text   R   0x0040006c
-           size_fixed_error   Text   R   0x00400204
-           size_input_error   Text   R   0x00400278
+           size_fixed_error   Text   R   0x00400208
+           size_input_error   Text   R   0x00400288
                    spacesss   Data   R   0x10000196
                    get_hint   Text   R   0x00400084
                  read_input   Text   R   0x00400090
                  load_fixed   Text   R   0x0040016c
             plus_char_break   Data   R   0x10000186
-               print_y_hint   Text   R   0x004003e0
+               print_y_hint   Text   R   0x004003f8
                       board   Data   R   0x10000001
            board_space_back   Data   R   0x10000190
-       print_board_loop_col   Text   R   0x0040030c
-            read_input_loop   Text   R   0x0040024c
+       print_board_loop_col   Text   R   0x00400324
+            read_input_loop   Text   R   0x0040025c
         illegal_input_error   Data   R   0x100001cd
                  board_size   Data   R   0x10000000
               get_west_hint   Text   R   0x00400078
                    READ_INT          A   0x00000005
-  print_board_loop_col_done   Text   R   0x00400330
-            print_break_row   Text   R   0x00400380
-            load_fixed_done   Text   R   0x00400214
-         print_x_hints_done   Text   R   0x0040044c
-       print_break_row_loop   Text   R   0x004003b0
+  print_board_loop_col_done   Text   R   0x00400348
+            print_break_row   Text   R   0x00400398
+            load_fixed_done   Text   R   0x00400218
+         print_x_hints_done   Text   R   0x00400464
+       print_break_row_loop   Text   R   0x004003c8
           board_input_error   Data   R   0x1000019f
                 south_hints   Data   R   0x10000121
              read_input_end   Text   R   0x0040015c
                PRINT_STRING          A   0x00000004
-               print_string   Text   R   0x00400458
+               print_string   Text   R   0x00400470
                        main   Text   R   0x00400000
-            read_fixed_loop   Text   R   0x00400190
-            load_hints_done   Text   R   0x00400288
+            read_fixed_loop   Text   R   0x00400194
+            load_hints_done   Text   R   0x00400298
             board_space_mid   Data   R   0x1000018c
    fixed_number_input_error   Data   R   0x100001fb
-              print_x_hints   Text   R   0x00400400
+              print_x_hints   Text   R   0x00400418
                   main_done   Text   R   0x00400018
                  east_hints   Data   R   0x10000141
              get_south_hint   Text   R   0x00400060
-                print_board   Text   R   0x0040029c
+                print_board   Text   R   0x004002b4
                     spacess   Data   R   0x1000019a
-       print_board_loop_row   Text   R   0x004002d8
-               print_number   Text   R   0x00400464
+       print_board_loop_row   Text   R   0x004002f0
+               print_number   Text   R   0x0040047c
               new_line_char   Data   R   0x10000194
                 write_board   Text   R   0x00400028
           board_space_front   Data   R   0x10000189
@@ -58,14 +58,14 @@ Module:  skyscrapers.obj
                        EXIT          A   0x0000000a
        board_row_break_part   Data   R   0x10000181
                   PRINT_INT          A   0x00000001
-           print_board_done   Text   R   0x00400348
+           print_board_done   Text   R   0x00400360
           fixed_input_error   Data   R   0x10000234
-         print_x_hints_loop   Text   R   0x00400428
-       print_break_row_done   Text   R   0x004003c8
+         print_x_hints_loop   Text   R   0x00400440
+       print_break_row_done   Text   R   0x004003e0
 
 Module:  r2k_startup.obj
- Text segment:  36 bytes, load point 0x00400470
+ Text segment:  36 bytes, load point 0x00400488
  Symbols:
                        Name Section Mode    Value
                   SYS_EXIT2          A   0x00000011
-             __r2k__entry__   Text   RG  0x00400474
+             __r2k__entry__   Text   RG  0x0040048c
