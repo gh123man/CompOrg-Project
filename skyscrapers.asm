@@ -403,7 +403,7 @@ print_board_loop_col:
 	beq	$s3, $s0, print_board_loop_col_done
 
 	lb	$a0, 0($s1)
-	jal	print_number
+	jal	print_number_exclude
 
 	la	$a0, board_space_mid
 	jal	print_string
@@ -496,7 +496,7 @@ print_y_hint:
 
 	add	$a0, $a0, $a1
 	lb	$a0, 0($a0)
-	jal	print_number
+	jal	print_number_exclude
 
 	lw	$ra, 0($sp)
 	addi	$sp, $sp, 4
@@ -532,7 +532,9 @@ print_x_hints_loop:
 	jal	print_string
 
 	lb	$a0, 0($t2)
-	jal	print_number
+	
+	beq	$a0, $zero, print_space
+	jal	print_number_exclude
 
 	addi	$t2, $t2, 1
 	addi	$t0, $t0, 1
@@ -554,14 +556,45 @@ print_string:
 
 	jr	$ra
 
+
+
+
+#
+# Name: print_number_exclude
+#    prints numbers excluding zero
+#
+#
+print_number_exclude:
+	addi	$sp, $sp, -4
+	sw	$ra, 0($sp)
+	
+	beq	$a0, $zero, print_space
+	
+	li	$v0, PRINT_INT
+	syscall
+	
+	j	done_print_number_exclude
+	
+print_space:
+	la	$a0, spaces
+	jal	print_string
+	
+done_print_number_exclude:
+
+	lw	$ra, 0($sp)
+	addi	$sp, $sp, 4
+	jr	$ra
+
+#
+# Name: print_number
+#    prints numbers
+#
+#
 print_number:
 	li	$v0, PRINT_INT
 	syscall
 
 	jr	$ra
-
-
-
 
 
 

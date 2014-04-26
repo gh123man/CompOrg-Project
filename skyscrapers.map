@@ -2,7 +2,7 @@ Load map
 ========
 
 Module:  skyscrapers.obj
- Text segment:  1160 bytes, load point 0x00400000
+ Text segment:  1212 bytes, load point 0x00400000
  Data segment:  624 bytes, load point 0x10000000
  Symbols:
                        Name Section Mode    Value
@@ -16,6 +16,7 @@ Module:  skyscrapers.obj
                    spacesss   Data   R   0x10000196
                    get_hint   Text   R   0x00400084
                  read_input   Text   R   0x00400090
+  done_print_number_exclude   Text   R   0x004004a4
                  load_fixed   Text   R   0x0040016c
             plus_char_break   Data   R   0x10000186
                print_y_hint   Text   R   0x004003f8
@@ -27,16 +28,17 @@ Module:  skyscrapers.obj
                  board_size   Data   R   0x10000000
               get_west_hint   Text   R   0x00400078
                    READ_INT          A   0x00000005
+                print_space   Text   R   0x00400498
   print_board_loop_col_done   Text   R   0x00400348
             print_break_row   Text   R   0x00400398
             load_fixed_done   Text   R   0x00400218
-         print_x_hints_done   Text   R   0x00400464
+         print_x_hints_done   Text   R   0x00400468
        print_break_row_loop   Text   R   0x004003c8
           board_input_error   Data   R   0x1000019f
                 south_hints   Data   R   0x10000121
              read_input_end   Text   R   0x0040015c
                PRINT_STRING          A   0x00000004
-               print_string   Text   R   0x00400470
+               print_string   Text   R   0x00400474
                        main   Text   R   0x00400000
             read_fixed_loop   Text   R   0x00400194
             load_hints_done   Text   R   0x00400298
@@ -49,8 +51,9 @@ Module:  skyscrapers.obj
                 print_board   Text   R   0x004002b4
                     spacess   Data   R   0x1000019a
        print_board_loop_row   Text   R   0x004002f0
-               print_number   Text   R   0x0040047c
+               print_number   Text   R   0x004004b0
               new_line_char   Data   R   0x10000194
+       print_number_exclude   Text   R   0x00400480
                 write_board   Text   R   0x00400028
           board_space_front   Data   R   0x10000189
                      spaces   Data   R   0x1000019d
@@ -64,8 +67,8 @@ Module:  skyscrapers.obj
        print_break_row_done   Text   R   0x004003e0
 
 Module:  r2k_startup.obj
- Text segment:  36 bytes, load point 0x00400488
+ Text segment:  36 bytes, load point 0x004004bc
  Symbols:
                        Name Section Mode    Value
                   SYS_EXIT2          A   0x00000011
-             __r2k__entry__   Text   RG  0x0040048c
+             __r2k__entry__   Text   RG  0x004004c0

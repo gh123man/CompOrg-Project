@@ -264,7 +264,7 @@
  201 0154               	
  202 0154               read_input_error:
  203 0154               	
- 204 0154 0C00011C		jal	print_string
+ 204 0154 0C00011D		jal	print_string
  205 0158 34020000		li	$v0, 0		#return 0
  206 015c               
  207 015c               read_input_end:
@@ -467,11 +467,11 @@
  390 0308               	
  391 0308 3C040000		la	$a0, spaces
      030c 34840000
- 392 0310 0C00011C		jal	print_string
+ 392 0310 0C00011D		jal	print_string
  393 0314               
  394 0314 3C040000		la	$a0, board_space_front
      0318 34840000
- 395 031c 0C00011C		jal	print_string
+ 395 031c 0C00011D		jal	print_string
  396 0320               	
  397 0320               
  398 0320 00009821		move	$s3, $zero
@@ -482,11 +482,11 @@
  403 0324 12700008		beq	$s3, $s0, print_board_loop_col_done
  404 0328               
  405 0328 82240000		lb	$a0, 0($s1)
- 406 032c 0C00011F		jal	print_number
+ 406 032c 0C000120		jal	print_number_exclude
  407 0330               
  408 0330 3C040000		la	$a0, board_space_mid
      0334 34840000
- 409 0338 0C00011C		jal	print_string
+ 409 0338 0C00011D		jal	print_string
  410 033c               	
  411 033c 22730001		addi	$s3, $s3, 1
  412 0340 22310001		addi	$s1, $s1, 1
@@ -514,7 +514,7 @@
  432 0370               	
  433 0370 3C040000		la	$a0, new_line_char
      0374 34840000
- 434 0378 0C00011C		jal	print_string
+ 434 0378 0C00011D		jal	print_string
  435 037c               
  436 037c 8FBF0010		lw	$ra, 16($sp)
  437 0380 8FB3000C		lw	$s3, 12($sp)
@@ -535,11 +535,11 @@
  452 03a0               
  453 03a0 3C040000		la	$a0, new_line_char
      03a4 34840000
- 454 03a8 0C00011C		jal	print_string
+ 454 03a8 0C00011D		jal	print_string
  455 03ac               
  456 03ac 3C040000		la	$a0, spacess
      03b0 34840000
- 457 03b4 0C00011C		jal	print_string
+ 457 03b4 0C00011D		jal	print_string
  458 03b8               	
  459 03b8 3C090000		la      $t1, board_size
      03bc 35290000
@@ -554,7 +554,7 @@
  468 03cc               
  469 03cc 3C040000		la	$a0, board_row_break_part
      03d0 34840000
- 470 03d4 0C00011C		jal	print_string
+ 470 03d4 0C00011D		jal	print_string
  471 03d8               
  472 03d8 21080001		addi	$t0, $t0, 1
  473 03dc               
@@ -563,7 +563,7 @@
  476 03e0               print_break_row_done:
  477 03e0 3C040000		la	$a0, plus_char_break
      03e4 34840000
- 478 03e8 0C00011C		jal	print_string
+ 478 03e8 0C00011D		jal	print_string
  479 03ec               	
  480 03ec 8FBF0000		lw	$ra, 0($sp)
  481 03f0 23BD0004		addi	$sp, $sp, 4
@@ -584,7 +584,7 @@
  496 0400               
  497 0400 00852020		add	$a0, $a0, $a1
  498 0404 80840000		lb	$a0, 0($a0)
- 499 0408 0C00011F		jal	print_number
+ 499 0408 0C000120		jal	print_number_exclude
  500 040c               
  501 040c 8FBF0000		lw	$ra, 0($sp)
  502 0410 23BD0004		addi	$sp, $sp, 4
@@ -612,54 +612,88 @@
  523 0434               	
  524 0434 3C040000		la	$a0, spaces
      0438 34840000
- 525 043c 0C00011C		jal	print_string
+ 525 043c 0C00011D		jal	print_string
  526 0440               
  527 0440               print_x_hints_loop:
  528 0440               	
- 529 0440 11280008		beq	$t1, $t0, print_x_hints_done
+ 529 0440 11280009		beq	$t1, $t0, print_x_hints_done
  530 0444               	
  531 0444 3C040000		la	$a0, spacesss
      0448 34840000
- 532 044c 0C00011C		jal	print_string
+ 532 044c 0C00011D		jal	print_string
  533 0450               
  534 0450 81440000		lb	$a0, 0($t2)
- 535 0454 0C00011F		jal	print_number
- 536 0458               
- 537 0458 214A0001		addi	$t2, $t2, 1
- 538 045c 21080001		addi	$t0, $t0, 1
- 539 0460               
- 540 0460 08000110		j	print_x_hints_loop
+ 535 0454               	
+ 536 0454 10800010		beq	$a0, $zero, print_space
+ 537 0458 0C000120		jal	print_number_exclude
+ 538 045c               
+ 539 045c 214A0001		addi	$t2, $t2, 1
+ 540 0460 21080001		addi	$t0, $t0, 1
  541 0464               
- 542 0464               print_x_hints_done:
- 543 0464               	
- 544 0464 8FBF0000		lw	$ra, 0($sp)
- 545 0468 23BD0004		addi	$sp, $sp, 4
- 546 046c               	
- 547 046c 03E00008		jr	$ra
- 548 0470               
- 549 0470               
- 550 0470               
- 551 0470               print_string:
- 552 0470 34020004		li	$v0, PRINT_STRING
- 553 0474 0000000C		syscall
- 554 0478               
- 555 0478 03E00008		jr	$ra
+ 542 0464 08000110		j	print_x_hints_loop
+ 543 0468               
+ 544 0468               print_x_hints_done:
+ 545 0468               	
+ 546 0468 8FBF0000		lw	$ra, 0($sp)
+ 547 046c 23BD0004		addi	$sp, $sp, 4
+ 548 0470               	
+ 549 0470 03E00008		jr	$ra
+ 550 0474               
+ 551 0474               
+ 552 0474               
+ 553 0474               print_string:
+ 554 0474 34020004		li	$v0, PRINT_STRING
+ 555 0478 0000000C		syscall
  556 047c               
- 557 047c               print_number:
- 558 047c 34020001		li	$v0, PRINT_INT
- 559 0480 0000000C		syscall
- 560 0484               
- 561 0484 03E00008		jr	$ra
- 562 0488               
- 563 0488               
- 564 0488               
- 565 0488               
- 566 0488               
- 567 0488               
- 568 0488               
- 569 0488               
- 570 0488               
- 571 0488               
+ 557 047c 03E00008		jr	$ra
+ 558 0480               
+ 559 0480               
+ 560 0480               
+ 561 0480               
+ 562 0480               #
+ 563 0480               # Name: print_number_exclude
+ 564 0480               #    prints numbers excluding zero
+ 565 0480               #
+ 566 0480               #
+ 567 0480               print_number_exclude:
+ 568 0480 23BDFFFC		addi	$sp, $sp, -4
+ 569 0484 AFBF0000		sw	$ra, 0($sp)
+ 570 0488               	
+ 571 0488 10800003		beq	$a0, $zero, print_space
+ 572 048c               	
+ 573 048c 34020001		li	$v0, PRINT_INT
+ 574 0490 0000000C		syscall
+ 575 0494               	
+ 576 0494 08000129		j	done_print_number_exclude
+ 577 0498               	
+ 578 0498               print_space:
+ 579 0498 3C040000		la	$a0, spaces
+     049c 34840000
+ 580 04a0 0C00011D		jal	print_string
+ 581 04a4               	
+ 582 04a4               done_print_number_exclude:
+ 583 04a4               
+ 584 04a4 8FBF0000		lw	$ra, 0($sp)
+ 585 04a8 23BD0004		addi	$sp, $sp, 4
+ 586 04ac 03E00008		jr	$ra
+ 587 04b0               
+ 588 04b0               #
+ 589 04b0               # Name: print_number
+ 590 04b0               #    prints numbers
+ 591 04b0               #
+ 592 04b0               #
+ 593 04b0               print_number:
+ 594 04b0 34020001		li	$v0, PRINT_INT
+ 595 04b4 0000000C		syscall
+ 596 04b8               
+ 597 04b8 03E00008		jr	$ra
+ 598 04bc               
+ 599 04bc               
+ 600 04bc               
+ 601 04bc               
+ 602 04bc               
+ 603 04bc               
+ 604 04bc               
 
 
 EXIT                       = 0000000A   
@@ -673,6 +707,7 @@ board_size                   00000000 R  data
 board_space_back             00000190 R  data 
 board_space_front            00000189 R  data 
 board_space_mid              0000018C R  data 
+done_print_number_exclude    000004A4 R  text 
 east_hints                   00000141 R  data 
 fixed_input_error            00000234 R  data 
 fixed_number_input_error     000001FB R  data 
@@ -699,10 +734,12 @@ print_board_loop_row         000002F0 R  text
 print_break_row              00000398 R  text 
 print_break_row_done         000003E0 R  text 
 print_break_row_loop         000003C8 R  text 
-print_number                 0000047C R  text 
-print_string                 00000470 R  text 
+print_number                 000004B0 R  text 
+print_number_exclude         00000480 R  text 
+print_space                  00000498 R  text 
+print_string                 00000474 R  text 
 print_x_hints                00000418 R  text 
-print_x_hints_done           00000464 R  text 
+print_x_hints_done           00000468 R  text 
 print_x_hints_loop           00000440 R  text 
 print_y_hint                 000003F8 R  text 
 read_fixed_loop              00000194 R  text 
