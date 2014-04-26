@@ -3,6 +3,7 @@
 
 PRINT_INT = 1
 PRINT_STRING = 4
+READ_INT = 5
 EXIT = 10
 
 	.data
@@ -41,6 +42,9 @@ spacess:
 	.asciiz "  "
 spaces:
 	.asciiz " "
+	
+board_input_error:
+	.asciiz "\nInvalid board size, Skyscrapers terminating\n"
 
 	.text
 	.align	2
@@ -58,10 +62,8 @@ main:
 	sw	$ra, 4($sp)
 	sw	$s0, 0($sp)
 	
-	la	$t0, board_size
-	li	$t1, 3	#size
-
-	sb	$t1, 0($t0)	
+	jal	read_input
+	beq	$v0, $zero, main_done	#end if it returned false. 
 
 	jal	print_board
 
@@ -75,7 +77,7 @@ main_done:
 
 
 #
-# Name: get_x_hint
+# Name: get_<direction>_hint
 #
 # Arguments: 
 #     $a0: index
@@ -97,22 +99,107 @@ get_hint:
 	lb	$v0, 0($a1)
 	jr	$ra
 
+#####################################################
+#               Data Input Functions                #
+#####################################################
+
+read_input:
+	addi	$sp, $sp, -8
+	sw	$ra, 4($sp)
+	sw	$s0, 0($sp)
+
+	#read user input board bounds
+	li	$v0, READ_INT
+	syscall
+	
+	#confirm starting board bounds
+	li	$t0, 3
+	li	$t1, 9
+	la	$a0, board_input_error
+	blt	$v0, $t0, read_input_error
+	blt	$t1, $v0, read_input_error
+	
+	#write the borad bounds
+	la	$t0, board_size
+	sb	$v0, 0($t0)
+	
+	move	$s0, $v0	#s0 will contian the board size
+	
+	la	$a0, north_hints
+	move	$a1, $s0
+	jal	load_hints
+	
+	la	$a0, east_hints
+	move	$a1, $s0
+	jal	load_hints
+
+
+	la	$a0, south_hints
+	move	$a1, $s0
+	jal	load_hints
+
+
+	la	$a0, west_hints
+	move	$a1, $s0
+	jal	load_hints
 
 
 
+	#all input is good
+	li	$v0, 1		#return 1
+	j	read_input_end
 
+	
+read_input_error:
+	
+	jal	print_string
+	li	$v0, 0		#return 0
 
+read_input_end:
+	lw	$ra, 4($sp)
+	lw	$s0, 0($sp)
+	addi	$sp, $sp, 8
+	jr	$ra
 
+	
 
+load_hints:
+	addi	$sp, $sp, -12
+	sw	$ra, 8($sp)
+	sw	$s1, 4($sp)
+	sw	$s0, 0($sp)
+	
+	move	$s0, $a0
+	move	$s1, $a1
+	
+	li	$t0, 0		#counter
+read_input_loop:
+	
+	beq	$t0, $s1, load_hints_done
+	
+	li	$v0, READ_INT
+	syscall
+	
+	sb	$v0, 0($s0)
+	addi	$s0, $s0, 1
 
+	addi	$t0, $t0, 1
+	j	read_input_loop
 
+	
+load_hints_done:
+	lw	$ra, 8($sp)
+	lw	$s1, 4($sp)
+	lw	$s0, 0($sp)
+	addi	$sp, $sp, 12
+	jr	$ra
 
-
-
-
+	
+	
+	
 
 #####################################################
-#             Print functions below                 #
+#               Print functions                     #
 #####################################################
 
 #
@@ -171,13 +258,13 @@ print_board_loop_col:
 	j	print_board_loop_col
 	
 print_board_loop_col_done:
-	addi	$s1, $s1, 4
-	addi	$s2, $s2, 1
 	
 	la	$a0, east_hints
 	move	$a1, $s2
 	jal	print_y_hint
 	
+	addi	$s1, $s1, 4
+	addi	$s2, $s2, 1
 	
 	j	print_board_loop_row
 

@@ -2,53 +2,61 @@ Load map
 ========
 
 Module:  skyscrapers.obj
- Text segment:  580 bytes, load point 0x00400000
- Data segment:  416 bytes, load point 0x10000000
+ Text segment:  812 bytes, load point 0x00400000
+ Data segment:  464 bytes, load point 0x10000000
  Symbols:
                        Name Section Mode    Value
+           read_input_error   Text   R   0x004000f0
+                 load_hints   Text   R   0x00400108
                  west_hints   Data   R   0x10000161
                 north_hints   Data   R   0x10000101
-              get_east_hint   Text   R   0x00400048
+              get_east_hint   Text   R   0x00400040
                    spacesss   Data   R   0x10000196
-                   get_hint   Text   R   0x00400060
+                   get_hint   Text   R   0x00400058
+                 read_input   Text   R   0x00400064
             plus_char_break   Data   R   0x10000186
-               print_y_hint   Text   R   0x004001b4
+               print_y_hint   Text   R   0x0040029c
                       board   Data   R   0x10000001
            board_space_back   Data   R   0x10000190
-       print_board_loop_col   Text   R   0x004000dc
+       print_board_loop_col   Text   R   0x004001c4
+            read_input_loop   Text   R   0x00400124
                  board_size   Data   R   0x10000000
-              get_west_hint   Text   R   0x00400054
-  print_board_loop_col_done   Text   R   0x00400100
-            print_break_row   Text   R   0x00400154
-         print_x_hints_done   Text   R   0x00400220
-       print_break_row_loop   Text   R   0x00400184
+              get_west_hint   Text   R   0x0040004c
+                   READ_INT          A   0x00000005
+  print_board_loop_col_done   Text   R   0x004001e8
+            print_break_row   Text   R   0x0040023c
+         print_x_hints_done   Text   R   0x00400308
+       print_break_row_loop   Text   R   0x0040026c
+          board_input_error   Data   R   0x1000019f
                 south_hints   Data   R   0x10000121
+             read_input_end   Text   R   0x004000f8
                PRINT_STRING          A   0x00000004
-               print_string   Text   R   0x0040022c
+               print_string   Text   R   0x00400314
                        main   Text   R   0x00400000
+            load_hints_done   Text   R   0x00400140
             board_space_mid   Data   R   0x1000018c
-              print_x_hints   Text   R   0x004001d4
-                  main_done   Text   R   0x00400020
+              print_x_hints   Text   R   0x004002bc
+                  main_done   Text   R   0x00400018
                  east_hints   Data   R   0x10000141
-             get_south_hint   Text   R   0x0040003c
-                print_board   Text   R   0x0040006c
+             get_south_hint   Text   R   0x00400034
+                print_board   Text   R   0x00400154
                     spacess   Data   R   0x1000019a
-       print_board_loop_row   Text   R   0x004000a8
-               print_number   Text   R   0x00400238
+       print_board_loop_row   Text   R   0x00400190
+               print_number   Text   R   0x00400320
               new_line_char   Data   R   0x10000194
           board_space_front   Data   R   0x10000189
                      spaces   Data   R   0x1000019d
-             get_north_hint   Text   R   0x00400030
+             get_north_hint   Text   R   0x00400028
                        EXIT          A   0x0000000a
        board_row_break_part   Data   R   0x10000181
                   PRINT_INT          A   0x00000001
-           print_board_done   Text   R   0x0040011c
-         print_x_hints_loop   Text   R   0x004001fc
-       print_break_row_done   Text   R   0x0040019c
+           print_board_done   Text   R   0x00400204
+         print_x_hints_loop   Text   R   0x004002e4
+       print_break_row_done   Text   R   0x00400284
 
 Module:  r2k_startup.obj
- Text segment:  36 bytes, load point 0x00400244
+ Text segment:  36 bytes, load point 0x0040032c
  Symbols:
                        Name Section Mode    Value
                   SYS_EXIT2          A   0x00000011
-             __r2k__entry__   Text   RG  0x00400248
+             __r2k__entry__   Text   RG  0x00400330
