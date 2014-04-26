@@ -190,6 +190,7 @@ read_input:
 	move	$a0, $v0
 	move	$a1, $s0
 	jal	load_fixed
+	beq	$v0, $zero, read_input_error
 	
 
 
@@ -244,24 +245,25 @@ read_fixed_loop:
 	syscall
 	move	$t0, $v0
 	
+	blt	$t0, $zero, size_fixed_error
+	blt	$s2, $t0, size_fixed_error
+	
 	#load y
 	li	$v0, READ_INT
 	syscall
 	move	$t1, $v0
+	
+	blt	$t1, $zero, size_fixed_error
+	blt	$s2, $t1, size_fixed_error
 	
 	#load value
 	li	$v0, READ_INT
 	syscall
 	move	$t2, $v0
 	
-	blt	$t0, $zero, size_fixed_error
-	blt	$s2, $t0, size_fixed_error
-	
-	blt	$t1, $zero, size_fixed_error
-	blt	$s2, $t1, size_fixed_error
-	
-	blt	$t3, $zero, size_fixed_error
-	blt	$s2, $t3, size_fixed_error
+	li	$t9, 1
+	blt	$t2, $t9, size_fixed_error
+	blt	$s2, $t2, size_fixed_error
 	
 	move	$a0, $t0
 	move	$a1, $t1
@@ -276,7 +278,7 @@ size_fixed_error:
 	
 	la	$a0, fixed_input_error
 	li	$v0, 0
-	j	load_hints_done
+	j	load_fixed_done
 	
 load_fixed_done:
 	lw	$ra, 12($sp)
