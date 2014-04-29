@@ -56,9 +56,9 @@ fixed_input_error:
 	.text
 	.align	2
 
-##################################################
-#              Program area                      #
-##################################################
+#####################################################
+#                  Program area                     #
+#####################################################
 
 
 #
@@ -70,9 +70,19 @@ main:
 	sw	$s0, 0($sp)
 	
 	jal	read_input
-	beq	$v0, $zero, main_done	#end if it returned false. 
+	beq	$v0, $zero, main_done	#end if it returned false.
 	
 	jal	print_board
+	
+	
+	
+	la	$a0, board
+	li	$a1, 0
+	la	$t0, board_size
+	lb	$a2, 0($t0)
+	mul	$a3, $a2, $a2
+	
+	jal	eval
 
 main_done:
 	lw	$ra, 4($sp)
@@ -80,6 +90,154 @@ main_done:
 	addi	$sp, $sp, 8
 	jr	$ra
 
+
+
+
+#####################################################
+#                    Sim eval                       #
+#####################################################
+
+#
+# Name: eval
+#
+# Arguments:
+#    a0: board location pointer
+#    a1: board locaiton counter
+#    a2: board bound
+#    a3: board length
+#
+eval:
+	addi	$sp, $sp, -32
+	sw	$ra, 28($sp)
+	sw	$s6, 24($sp)
+	sw	$s5, 20($sp)
+	sw	$s4, 16($sp)
+	sw	$s3, 12($sp)
+	sw	$s2, 8($sp)
+	sw	$s1, 4($sp)
+	sw	$s0, 0($sp)
+	
+	move	$s0, $a0				#save board pointer
+	move	$s1, $a1				#save locaiton counter
+	move	$s2, $a2				#save board bound
+	move	$s3, $a3				#save board length
+	
+	lb	$s2, 0($s0)				#save current value
+	
+	bne	$s2, $zero, eval_not_found_fixed	#if the current location is not 0 save value
+	
+	#fixed found if here
+	
+	bne	$s1, $s3, no_last_fixed_space		#if its the last fixed space, continue
+	
+	jal	validate_board
+	#v0 is set if valid
+	
+	j	end_eval
+
+no_last_fixed_space:
+	
+	addi	$a0, $s0, 1				#tick board pointer
+	addi	$a1, $s1, 1				#tick counter
+	move	$a2, $s2				
+	move	$a3, $s3
+	
+	jal	eval					#recurse
+
+	j	eval_end
+
+eval_not_found_fixed:
+	
+	#for each possible piece place
+	#is valid place? call eval on next
+	#not valid? try again
+	#none valid? return false
+	
+	$li	$s4, 1					#s4 is our counter for the loop (cant use 0)
+	
+eval_loop:
+	
+	beq	$s4, $s2, eval_loop_done
+	
+	
+	jal	place_and_validate			#place and validate
+	beq	$v0, $zero, eval_loop_bottom		#branch if bad place
+	
+	bne	$s1, $s3, not_last_place
+	
+	#was last place
+	#was good place so return ture
+	li	$v0, 1
+	j	eval_end
+	
+	
+not_last_place:
+	addi	$a0, $s0, 1				#tick board pointer
+	addi	$a1, $s1, 1				#tick counter
+	move	$a2, $s2				
+	move	$a3, $s3
+	
+	jal	eval					#recurse
+	
+	bne	$v0, $zero, eval_done
+	
+eval_loop_bottom:
+	addi	$s4, $s4, 1	#tick
+	j	eval_loop
+	
+	
+eval_loop_done:
+	j	eval_end
+	
+	
+
+
+eval_end:
+	move	$v0, $s3
+	lw	$ra, 28($sp)
+	lw	$s6, 24($sp)
+	lw	$s5, 20($sp)
+	lw	$s4, 16($sp)
+	lw	$s3, 12($sp)
+	lw	$s2, 8($sp)
+	lw	$s1, 4($sp)
+	lw	$s0, 0($sp)
+	addi	$sp, $sp, 32
+	jr	$ra
+
+
+
+
+
+
+
+
+
+#####################################################
+#               Data Acces Functions                #
+#####################################################
+
+#
+# Name: read_board
+#
+# Arguments:
+#    a0: x index
+#    a1: y index
+#
+read_board:
+	la	$t0, board_size
+	lb	$t0, 0($t0)
+	#t0 has board width
+	
+	mul	$t0, $t0, $a1
+	add	$t0, $t0, $a0
+	
+	la	$t1, board
+	add	$t0, $t1, $t0
+	lb	$v0, 0($t0)
+	
+	jr	$ra
+	
 #
 # Name: write_board
 #
@@ -585,7 +743,11 @@ done_print_number_exclude:
 	addi	$sp, $sp, 4
 	jr	$ra
 
-
+#
+# Name: print_number
+#    prints numbers
+#
+#
 print_number:
 	li	$v0, PRINT_INT
 	syscall
