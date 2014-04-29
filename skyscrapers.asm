@@ -231,7 +231,12 @@ validate_board:
 	sw	$s0, 0($sp)
 	
 	
-	li	$v0, 1
+	
+	
+	
+	
+	#returns true
+	li	$v0, 0
 	
 	
 	lw	$ra, 28($sp)
@@ -267,8 +272,8 @@ read_board:
 	lb	$t0, 0($t0)
 	#t0 has board width
 	
-	mul	$t0, $t0, $a1
-	add	$t0, $t0, $a0
+	mul	$t0, $t0, $a0
+	add	$t0, $t0, $a1
 	
 	la	$t1, board
 	add	$t0, $t1, $t0
@@ -289,8 +294,8 @@ write_board:
 	lb	$t0, 0($t0)
 	#t0 has board width
 	
-	mul	$t0, $t0, $a1
-	add	$t0, $t0, $a0
+	mul	$t0, $t0, $a0
+	add	$t0, $t0, $a1
 	
 	la	$t1, board
 	add	$t0, $t1, $t0
@@ -717,21 +722,23 @@ print_x_hints:
 
 	li	$t0, 0
 	
-	la	$a0, spaces
+	la	$a0, spacess
 	jal	print_string
 
-print_x_hints_loop:
+print_x_hints_loop: 
 	
 	beq	$t1, $t0, print_x_hints_done
 	
-	la	$a0, spacesss
+	la	$a0, spacess
 	jal	print_string
 
 	lb	$a0, 0($t2)
 	
-	beq	$a0, $zero, print_space
 	jal	print_number_exclude
 
+	la	$a0, spaces
+	jal	print_string
+	
 	addi	$t2, $t2, 1
 	addi	$t0, $t0, 1
 

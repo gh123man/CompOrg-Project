@@ -188,7 +188,6 @@ not_last_place:
 	bne	$v0, $zero, eval_end
 	
 eval_loop_bottom:
-	jal	print_here
 	sb	$zero, 0($s0)				#rest board locaiton
 	addi	$s4, $s4, 1				#tick
 	j	eval_loop
@@ -232,6 +231,11 @@ validate_board:
 	sw	$s0, 0($sp)
 	
 	
+	
+	
+	
+	
+	#returns true
 	li	$v0, 1
 	
 	
@@ -268,8 +272,8 @@ read_board:
 	lb	$t0, 0($t0)
 	#t0 has board width
 	
-	mul	$t0, $t0, $a1
-	add	$t0, $t0, $a0
+	mul	$t0, $t0, $a0
+	add	$t0, $t0, $a1
 	
 	la	$t1, board
 	add	$t0, $t1, $t0
@@ -290,8 +294,8 @@ write_board:
 	lb	$t0, 0($t0)
 	#t0 has board width
 	
-	mul	$t0, $t0, $a1
-	add	$t0, $t0, $a0
+	mul	$t0, $t0, $a0
+	add	$t0, $t0, $a1
 	
 	la	$t1, board
 	add	$t0, $t1, $t0
@@ -718,21 +722,23 @@ print_x_hints:
 
 	li	$t0, 0
 	
-	la	$a0, spaces
+	la	$a0, spacess
 	jal	print_string
 
-print_x_hints_loop:
+print_x_hints_loop: 
 	
 	beq	$t1, $t0, print_x_hints_done
 	
-	la	$a0, spacesss
+	la	$a0, spacess
 	jal	print_string
 
 	lb	$a0, 0($t2)
 	
-	beq	$a0, $zero, print_space
 	jal	print_number_exclude
 
+	la	$a0, spaces
+	jal	print_string
+	
 	addi	$t2, $t2, 1
 	addi	$t0, $t0, 1
 

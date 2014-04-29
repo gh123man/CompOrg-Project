@@ -2,85 +2,85 @@ Load map
 ========
 
 Module:  skyscrapers.obj
- Text segment:  1608 bytes, load point 0x00400000
+ Text segment:  1612 bytes, load point 0x00400000
  Data segment:  624 bytes, load point 0x10000000
  Symbols:
                        Name Section Mode    Value
-           read_input_error   Text   R   0x004002cc
-                 load_hints   Text   R   0x004003b0
+           read_input_error   Text   R   0x004002c8
+                 load_hints   Text   R   0x004003ac
                    here_str   Data   R   0x10000181
                  west_hints   Data   R   0x10000161
                 north_hints   Data   R   0x10000101
-              get_east_hint   Text   R   0x004001e4
-           size_fixed_error   Text   R   0x00400380
-           size_input_error   Text   R   0x00400400
+              get_east_hint   Text   R   0x004001e0
+           size_fixed_error   Text   R   0x0040037c
+           size_input_error   Text   R   0x004003fc
                    spacesss   Data   R   0x1000019d
-                   get_hint   Text   R   0x004001fc
-                 read_board   Text   R   0x00400174
-                 read_input   Text   R   0x00400208
-  done_print_number_exclude   Text   R   0x00400630
-                 load_fixed   Text   R   0x004002e4
+                   get_hint   Text   R   0x004001f8
+                 read_board   Text   R   0x00400170
+                 read_input   Text   R   0x00400204
+  done_print_number_exclude   Text   R   0x00400634
+                 load_fixed   Text   R   0x004002e0
             plus_char_break   Data   R   0x1000018d
-               print_y_hint   Text   R   0x00400570
+               print_y_hint   Text   R   0x0040056c
                       board   Data   R   0x10000001
            board_space_back   Data   R   0x10000197
-       print_board_loop_col   Text   R   0x0040049c
-            read_input_loop   Text   R   0x004003d4
+       print_board_loop_col   Text   R   0x00400498
+            read_input_loop   Text   R   0x004003d0
         illegal_input_error   Data   R   0x100001d4
                  board_size   Data   R   0x10000000
            eval_loop_bottom   Text   R   0x004000e4
-              get_west_hint   Text   R   0x004001f0
+              get_west_hint   Text   R   0x004001ec
                    READ_INT          A   0x00000005
-                print_space   Text   R   0x00400624
-  print_board_loop_col_done   Text   R   0x004004c0
-            print_break_row   Text   R   0x00400510
-             validate_board   Text   R   0x00400124
-                 print_here   Text   R   0x004005f8
-            load_fixed_done   Text   R   0x00400390
-         print_x_hints_done   Text   R   0x004005e0
+                print_space   Text   R   0x00400628
+  print_board_loop_col_done   Text   R   0x004004bc
+            print_break_row   Text   R   0x0040050c
+             validate_board   Text   R   0x00400120
+                 print_here   Text   R   0x004005fc
+            load_fixed_done   Text   R   0x0040038c
+         print_x_hints_done   Text   R   0x004005e4
                   eval_loop   Text   R   0x004000b4
-       print_break_row_loop   Text   R   0x00400540
+       print_break_row_loop   Text   R   0x0040053c
           board_input_error   Data   R   0x100001a6
                 south_hints   Data   R   0x10000121
-                   eval_end   Text   R   0x004000f8
-             read_input_end   Text   R   0x004002d4
+                   eval_end   Text   R   0x004000f4
+             read_input_end   Text   R   0x004002d0
        eval_not_found_fixed   Text   R   0x004000b0
                PRINT_STRING          A   0x00000004
-               print_string   Text   R   0x004005ec
-             eval_loop_done   Text   R   0x004000f4
+               print_string   Text   R   0x004005f0
+             eval_loop_done   Text   R   0x004000f0
                        eval   Text   R   0x0040004c
                        main   Text   R   0x00400000
-            read_fixed_loop   Text   R   0x0040030c
-            load_hints_done   Text   R   0x00400410
+            read_fixed_loop   Text   R   0x00400308
+            load_hints_done   Text   R   0x0040040c
             board_space_mid   Data   R   0x10000193
    fixed_number_input_error   Data   R   0x10000202
-              print_x_hints   Text   R   0x00400590
+              print_x_hints   Text   R   0x0040058c
                   main_done   Text   R   0x0040003c
                  east_hints   Data   R   0x10000141
-             get_south_hint   Text   R   0x004001d8
-                print_board   Text   R   0x0040042c
+             get_south_hint   Text   R   0x004001d4
+                print_board   Text   R   0x00400428
                     spacess   Data   R   0x100001a1
         no_last_fixed_space   Text   R   0x00400098
-       print_board_loop_row   Text   R   0x00400468
-               print_number   Text   R   0x0040063c
+       print_board_loop_row   Text   R   0x00400464
+               print_number   Text   R   0x00400640
               new_line_char   Data   R   0x1000019b
-       print_number_exclude   Text   R   0x0040060c
-                write_board   Text   R   0x004001a0
+       print_number_exclude   Text   R   0x00400610
+                write_board   Text   R   0x0040019c
           board_space_front   Data   R   0x10000190
                      spaces   Data   R   0x100001a4
-             get_north_hint   Text   R   0x004001cc
+             get_north_hint   Text   R   0x004001c8
                        EXIT          A   0x0000000a
        board_row_break_part   Data   R   0x10000188
              not_last_place   Text   R   0x004000cc
                   PRINT_INT          A   0x00000001
-           print_board_done   Text   R   0x004004d8
+           print_board_done   Text   R   0x004004d4
           fixed_input_error   Data   R   0x1000023b
-         print_x_hints_loop   Text   R   0x004005b8
-       print_break_row_done   Text   R   0x00400558
+         print_x_hints_loop   Text   R   0x004005b4
+       print_break_row_done   Text   R   0x00400554
 
 Module:  r2k_startup.obj
- Text segment:  36 bytes, load point 0x00400648
+ Text segment:  36 bytes, load point 0x0040064c
  Symbols:
                        Name Section Mode    Value
                   SYS_EXIT2          A   0x00000011
-             __r2k__entry__   Text   RG  0x0040064c
+             __r2k__entry__   Text   RG  0x00400650
