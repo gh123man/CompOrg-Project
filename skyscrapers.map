@@ -2,85 +2,92 @@ Load map
 ========
 
 Module:  skyscrapers.obj
- Text segment:  1612 bytes, load point 0x00400000
+ Text segment:  1884 bytes, load point 0x00400000
  Data segment:  624 bytes, load point 0x10000000
  Symbols:
-                       Name Section Mode    Value
-           read_input_error   Text   R   0x004002c8
-                 load_hints   Text   R   0x004003ac
-                   here_str   Data   R   0x10000181
-                 west_hints   Data   R   0x10000161
-                north_hints   Data   R   0x10000101
-              get_east_hint   Text   R   0x004001e0
-           size_fixed_error   Text   R   0x0040037c
-           size_input_error   Text   R   0x004003fc
-                   spacesss   Data   R   0x1000019d
-                   get_hint   Text   R   0x004001f8
-                 read_board   Text   R   0x00400170
-                 read_input   Text   R   0x00400204
-  done_print_number_exclude   Text   R   0x00400634
-                 load_fixed   Text   R   0x004002e0
-            plus_char_break   Data   R   0x1000018d
-               print_y_hint   Text   R   0x0040056c
-                      board   Data   R   0x10000001
-           board_space_back   Data   R   0x10000197
-       print_board_loop_col   Text   R   0x00400498
-            read_input_loop   Text   R   0x004003d0
-        illegal_input_error   Data   R   0x100001d4
-                 board_size   Data   R   0x10000000
-           eval_loop_bottom   Text   R   0x004000e4
-              get_west_hint   Text   R   0x004001ec
-                   READ_INT          A   0x00000005
-                print_space   Text   R   0x00400628
-  print_board_loop_col_done   Text   R   0x004004bc
-            print_break_row   Text   R   0x0040050c
-             validate_board   Text   R   0x00400120
-                 print_here   Text   R   0x004005fc
-            load_fixed_done   Text   R   0x0040038c
-         print_x_hints_done   Text   R   0x004005e4
-                  eval_loop   Text   R   0x004000b4
-       print_break_row_loop   Text   R   0x0040053c
-          board_input_error   Data   R   0x100001a6
-                south_hints   Data   R   0x10000121
-                   eval_end   Text   R   0x004000f4
-             read_input_end   Text   R   0x004002d0
-       eval_not_found_fixed   Text   R   0x004000b0
-               PRINT_STRING          A   0x00000004
-               print_string   Text   R   0x004005f0
-             eval_loop_done   Text   R   0x004000f0
-                       eval   Text   R   0x0040004c
-                       main   Text   R   0x00400000
-            read_fixed_loop   Text   R   0x00400308
-            load_hints_done   Text   R   0x0040040c
-            board_space_mid   Data   R   0x10000193
-   fixed_number_input_error   Data   R   0x10000202
-              print_x_hints   Text   R   0x0040058c
-                  main_done   Text   R   0x0040003c
-                 east_hints   Data   R   0x10000141
-             get_south_hint   Text   R   0x004001d4
-                print_board   Text   R   0x00400428
-                    spacess   Data   R   0x100001a1
-        no_last_fixed_space   Text   R   0x00400098
-       print_board_loop_row   Text   R   0x00400464
-               print_number   Text   R   0x00400640
-              new_line_char   Data   R   0x1000019b
-       print_number_exclude   Text   R   0x00400610
-                write_board   Text   R   0x0040019c
-          board_space_front   Data   R   0x10000190
-                     spaces   Data   R   0x100001a4
-             get_north_hint   Text   R   0x004001c8
-                       EXIT          A   0x0000000a
-       board_row_break_part   Data   R   0x10000188
-             not_last_place   Text   R   0x004000cc
-                  PRINT_INT          A   0x00000001
-           print_board_done   Text   R   0x004004d4
-          fixed_input_error   Data   R   0x1000023b
-         print_x_hints_loop   Text   R   0x004005b4
-       print_break_row_done   Text   R   0x00400554
+                         Name Section Mode    Value
+             read_input_error   Text   R   0x004003d8
+                   load_hints   Text   R   0x004004bc
+                     here_str   Data   R   0x10000181
+                   west_hints   Data   R   0x10000161
+                  north_hints   Data   R   0x10000101
+          continue_check_loop   Text   R   0x0040021c
+                get_east_hint   Text   R   0x004002f0
+             size_fixed_error   Text   R   0x0040048c
+             size_input_error   Text   R   0x0040050c
+                     spacesss   Data   R   0x1000019d
+                     get_hint   Text   R   0x00400308
+                   read_board   Text   R   0x00400280
+                   read_input   Text   R   0x00400314
+    done_print_number_exclude   Text   R   0x00400744
+                   load_fixed   Text   R   0x004003f0
+              plus_char_break   Data   R   0x1000018d
+  generic_check_loop_done_col   Text   R   0x00400234
+                 print_y_hint   Text   R   0x0040067c
+                        board   Data   R   0x10000001
+             board_space_back   Data   R   0x10000197
+         print_board_loop_col   Text   R   0x004005a8
+              read_input_loop   Text   R   0x004004e0
+          illegal_input_error   Data   R   0x100001d4
+                   board_size   Data   R   0x10000000
+             eval_loop_bottom   Text   R   0x004000f4
+                get_west_hint   Text   R   0x004002fc
+                     READ_INT          A   0x00000005
+                  print_space   Text   R   0x00400738
+    print_board_loop_col_done   Text   R   0x004005cc
+              print_break_row   Text   R   0x0040061c
+               validate_board   Text   R   0x00400130
+       generic_check_loop_col   Text   R   0x004001d8
+                   print_here   Text   R   0x0040070c
+              load_fixed_done   Text   R   0x0040049c
+           print_x_hints_done   Text   R   0x004006f4
+                    eval_loop   Text   R   0x004000b8
+         print_break_row_loop   Text   R   0x0040064c
+            board_input_error   Data   R   0x100001a6
+                  south_hints   Data   R   0x10000121
+                     eval_end   Text   R   0x00400104
+               read_input_end   Text   R   0x004003e0
+         eval_not_found_fixed   Text   R   0x004000b4
+                 PRINT_STRING          A   0x00000004
+                 print_string   Text   R   0x00400700
+               eval_loop_done   Text   R   0x00400100
+                         eval   Text   R   0x00400050
+                         main   Text   R   0x00400000
+              read_fixed_loop   Text   R   0x00400418
+              load_hints_done   Text   R   0x0040051c
+              board_space_mid   Data   R   0x10000193
+     fixed_number_input_error   Data   R   0x10000202
+                print_x_hints   Text   R   0x0040069c
+                    main_done   Text   R   0x00400040
+                   east_hints   Data   R   0x10000141
+               get_south_hint   Text   R   0x004002e4
+  generic_check_loop_done_row   Text   R   0x0040022c
+               get_next_north   Text   R   0x00400264
+                  print_board   Text   R   0x00400538
+                      spacess   Data   R   0x100001a1
+          no_last_fixed_space   Text   R   0x0040009c
+         print_board_loop_row   Text   R   0x00400574
+                 print_number   Text   R   0x00400750
+                new_line_char   Data   R   0x1000019b
+         print_number_exclude   Text   R   0x00400720
+                  write_board   Text   R   0x004002ac
+            board_space_front   Data   R   0x10000190
+          generic_check_board   Text   R   0x0040019c
+                       spaces   Data   R   0x100001a4
+               get_north_hint   Text   R   0x004002d8
+                         EXIT          A   0x0000000a
+         board_row_break_part   Data   R   0x10000188
+               not_last_place   Text   R   0x004000dc
+       generic_check_loop_row   Text   R   0x004001e8
+                    PRINT_INT          A   0x00000001
+             print_board_done   Text   R   0x004005e4
+            fixed_input_error   Data   R   0x1000023b
+           print_x_hints_loop   Text   R   0x004006c4
+         print_break_row_done   Text   R   0x00400664
 
 Module:  r2k_startup.obj
- Text segment:  36 bytes, load point 0x0040064c
+ Text segment:  36 bytes, load point 0x0040075c
  Symbols:
-                       Name Section Mode    Value
-                  SYS_EXIT2          A   0x00000011
-             __r2k__entry__   Text   RG  0x00400650
+                         Name Section Mode    Value
+                    SYS_EXIT2          A   0x00000011
+               __r2k__entry__   Text   RG  0x00400760

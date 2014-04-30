@@ -87,6 +87,23 @@ main:
 	
 	jal	eval
 	
+	
+	#    a0: hint_pointer
+	#    a1: index_funct_pointer
+	#    a2: board_size
+	#
+	#la	$a0, north_hints
+	#la	$a1, get_next_north
+	#jal	generic_check_board
+	
+	#move	$a0, $v0
+	#jal	print_number
+	
+	#debug
+	jal	print_board
+	
+	
+	
 
 main_done:
 	lw	$ra, 4($sp)
@@ -127,7 +144,7 @@ eval:
 	move	$s3, $a3				#save board length
 	
 	#debug
-	jal	print_board
+	#jal	print_board
 	
 	lb	$s5, 0($s0)				#save current value
 	
@@ -138,6 +155,7 @@ eval:
 	bne	$s1, $s3, no_last_fixed_space		#if its the last fixed space, continue
 	
 	jal	validate_board
+	move	$s6, $v0
 	#v0 is set if valid
 	
 	j	eval_end
@@ -159,20 +177,19 @@ eval_not_found_fixed:
 	
 eval_loop:
 	
-	beq	$s4, $s2, eval_loop_done
+	addi	$t9, $s2, 1
+	beq	$s4, $t9, eval_loop_done
 	
 	sb	$s4, 0($s0)				#write to board
-	jal	validate_board				#place
+	jal	validate_board				#validate
+	move	$s6, $v0
 	
-	beq	$v0, $zero, eval_loop_bottom		#branch if bad place
+	#debug
+	jal	print_board
+	
+	beq	$s6, $zero, eval_loop_bottom		#branch if bad place
 	
 	bne	$s1, $s3, not_last_place
-	
-	#was last place
-	#was good place so return ture
-	#li	$v0, 1
-	
-	
 	
 	j	eval_end
 	
@@ -185,7 +202,7 @@ not_last_place:
 	
 	jal	eval					#recurse
 	
-	bne	$v0, $zero, eval_end
+	bne	$s6, $zero, eval_end
 	
 eval_loop_bottom:
 	sb	$zero, 0($s0)				#rest board locaiton
@@ -200,7 +217,8 @@ eval_loop_done:
 
 
 eval_end:
-	move	$v0, $s3
+	move	$v0, $s6
+	
 	lw	$ra, 28($sp)
 	lw	$s6, 24($sp)
 	lw	$s5, 20($sp)
@@ -214,6 +232,13 @@ eval_end:
 
 
 
+
+
+
+
+#####################################################
+#                    validate                       #
+#####################################################
 
 #
 # Name: validate_board
@@ -233,10 +258,17 @@ validate_board:
 	
 	
 	
+	#    a0: hint_pointer
+	#    a1: index_funct_pointer
+	#    a2: board_size
+	#
+	la	$a0, north_hints
+	la	$a1, get_next_north
 	
+	la	$t0, board_size
+	lb	$a2, 0($t0)
 	
-	#returns true
-	li	$v0, 1
+	jal	generic_check_board
 	
 	
 	lw	$ra, 28($sp)
@@ -251,6 +283,132 @@ validate_board:
 	jr	$ra
 
 
+#
+# Name: get_next_north
+#
+# Arguments:
+#    a0: hint_pointer
+#    a1: index_funct_pointer
+#    a2: board_size
+#
+generic_check_board:
+	addi	$sp, $sp, -36
+	sw	$ra, 32($sp)
+	sw	$s7, 28($sp)
+	sw	$s6, 24($sp)
+	sw	$s5, 20($sp)
+	sw	$s4, 16($sp)
+	sw	$s3, 12($sp)
+	sw	$s2, 8($sp)
+	sw	$s1, 4($sp)
+	sw	$s0, 0($sp)
+	
+	
+	move	$s0, $a0		#hint pointer
+	move	$s1, $a1		#index funct pointer
+	move	$s2, $a2		#board size
+	
+	li	$s3, 0			#col counter
+	li	$s6, 1			#defualt to pass
+		
+	
+generic_check_loop_col:
+
+	beq	$s2, $s3, generic_check_loop_done_col
+	
+	
+	li	$s4, 0			#row counter
+	li	$s5, 0			#last tracker
+	
+	lb	$s7, 0($s0)		#current hint
+	
+generic_check_loop_row:
+	
+	beq	$s7, $zero, generic_check_loop_done_row		#no hint, pass
+
+	beq	$s2, $s4, generic_check_loop_done_row		#normal loop end
+	
+	################### Main logic ########################
+	
+	
+	addi	$a0, $s4, -1		#backup one
+	move	$a1, $s3
+	jalr	$s1			#call indexer funct
+	
+	move	$t2, $v0		#set cur
+	
+	
+	beq	$v0, $zero, generic_check_loop_done_row		#found zero, not finished, valid
+	
+	
+	blt	$s5, $t2, continue_check_loop
+	
+	addi	$t1, $s7, 1
+	beq	$t1, $s4, generic_check_loop_done_row		#hit hint bound
+	
+	############### fail #################
+	li	$s6, 0				#reutrn 0
+	j	generic_check_loop_done_col	#break all loops
+	
+continue_check_loop:
+	
+	########################################################
+	#move	$a0, $v0	#debu
+	#jal	print_number	#devg
+	
+	move	$s5, $t2		#last = current
+	
+	addi	$s0, $s0, 1
+	addi	$s4, $s4, 1
+	j	generic_check_loop_row
+
+generic_check_loop_done_row:
+	
+	#la	$a0, new_line_char
+	#jal	print_string
+	
+	addi	$s3, $s3, 1
+	j	generic_check_loop_col
+
+generic_check_loop_done_col:
+
+	move	$v0, $s6	#reutrn result
+	
+	lw	$ra, 32($sp)
+	lw	$s7, 28($sp)
+	lw	$s6, 24($sp)
+	lw	$s5, 20($sp)
+	lw	$s4, 16($sp)
+	lw	$s3, 12($sp)
+	lw	$s2, 8($sp)
+	lw	$s1, 4($sp)
+	lw	$s0, 0($sp)
+	addi	$sp, $sp, 36
+	jr	$ra
+	
+	
+	
+	
+
+
+#
+# Name: get_next_north
+#
+# Arguments:
+#    a0: col index
+#    a1: current_row_index
+#
+get_next_north:
+	addi	$sp, $sp, -4
+	sw	$ra, 0($sp)
+	
+	addi	$a0, $a0, 1
+	
+	jal	read_board
+	
+	lw	$ra, 0($sp)
+	addi	$sp, $sp, 4
+	jr	$ra
 
 
 
