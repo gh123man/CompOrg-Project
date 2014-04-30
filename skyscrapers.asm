@@ -1,5 +1,8 @@
-
-
+# File:		skyscrapers.asm
+# Author:	Brian Floersch
+#
+# Description:	Solves the skyscrapers puzzle
+#
 
 PRINT_INT = 1
 PRINT_STRING = 4
@@ -63,7 +66,6 @@ fixed_input_error:
 #                  Program area                     #
 #####################################################
 
-
 #
 # Name: Main
 #
@@ -76,7 +78,7 @@ main:
 	jal	print_string
 	
 	jal	read_input
-	beq	$v0, $zero, main_done	#end if it returned false.
+	beq	$v0, $zero, main_done
 	
 	
 	la	$a0, init_puzzle
@@ -152,18 +154,15 @@ eval:
 	
 	lb	$s5, 0($s0)				#save current value
 	
-	beq	$s5, $zero, eval_not_found_fixed	#if the current location is 0 branch
+	beq	$s5, $zero, eval_not_found_fixed
 	
-	#fixed found if here
+							#fixed found if here
 	
 	addi	$t3, $s3, -1
-	bne	$s1, $t3, no_last_fixed_space		#if its the last fixed space, continue
+	bne	$s1, $t3, no_last_fixed_space
 	
 	
-	#here it is the last fixed space
 	jal	validate_board
-	
-	#if v0 is 0, bad. if not good
 	
 	j	eval_end
 
@@ -181,7 +180,7 @@ no_last_fixed_space:
 
 eval_not_found_fixed:
 	
-	li	$s4, 1					#s4 is our counter for the loop (cant use 0)
+	li	$s4, 1					#s4 is our counter
 	
 eval_loop:
 	
@@ -196,7 +195,6 @@ eval_loop:
 	addi	$t3, $s3, -1
 	bne	$s1, $t3, not_last_place
 	
-	#here it is the last place and v0 is 1 so return 1
 	j	eval_end
 	
 	
@@ -337,7 +335,7 @@ generic_check_loop_col:
 	li	$s5, 0			#height counter
 	li	$t5, 0			#last building
 	
-	#check result
+					#check result
 	
 	lb	$s7, 0($s0)		#current hint
 	
@@ -350,7 +348,7 @@ generic_check_loop_row:
 	
 	addi	$a0, $s4, -1		#backup one
 	move	$a1, $s3
-	move	$a2, $s2		#alwas load boar size even though north and west dont need
+	move	$a2, $s2		#alwas load boad size
 	
 	
 	
@@ -385,13 +383,13 @@ generic_check_loop_row:
 	
 	
 	
-	beq	$t2, $zero, generic_check_loop_found_zero	#found zero, not finished, valid
+	beq	$t2, $zero, generic_check_loop_found_zero	#found zero
 	
 	addi	$t6, $t5, 1
 	blt	$t2, $t6, pass_add
 	
-	addi	$s5, $s5, 1					#add to new if its last
-	move	$t5, $t2					#set as new greatest
+	addi	$s5, $s5, 1					#add new if last
+	move	$t5, $t2					#set greatest
 	move	$a0, $t5
 	
 pass_add:
@@ -415,14 +413,13 @@ generic_check_loop_found_zero:
 	addi	$s3, $s3, 1
 	j	generic_check_loop_col
 	
-	############### fail #################
 check_fail:
-	li	$s6, 0				#reutrn 0
-	j	generic_check_loop_done_col	#break all loops	
+	li	$s6, 0						#reutrn 0
+	j	generic_check_loop_done_col			#break all loops	
 
 generic_check_loop_done_col:
 
-	move	$v0, $s6	#reutrn result
+	move	$v0, $s6					#reutrn result
 	
 	lw	$ra, 32($sp)
 	lw	$s7, 28($sp)
@@ -473,14 +470,14 @@ repeat_check_loop:
 	
 	addi	$a0, $s4, -1		#backup one to get next
 	move	$a1, $s0		#col
-	move	$a2, $s3		#alwas load boar size even though north and west dont need
+	move	$a2, $s3		#alwas load boad size
 	
 	jalr	$s1			#call indexer funct
 	
 	beq	$v0, $zero, repeat_check_loop_done
 	bne	$v0, $s2, repeat_check_loop_bottom
 	
-	#match_found
+					#match_found
 
 	addi	$s6, $s6, 1
 	
@@ -594,7 +591,7 @@ get_next_south:
 	
 	addi	$a0, $a0, 1
 	
-	sub	$a0, $a2, $a0		#reverse index
+	sub	$a0, $a2, $a0
 	addi	$a0, $a0, -1
 	
 	jal	read_board
@@ -620,7 +617,7 @@ get_next_south:
 read_board:
 	la	$t0, board_size
 	lb	$t0, 0($t0)
-	#t0 has board width
+					#t0 has board width
 	
 	mul	$t0, $t0, $a0
 	add	$t0, $t0, $a1
@@ -642,7 +639,7 @@ read_board:
 write_board:
 	la	$t0, board_size
 	lb	$t0, 0($t0)
-	#t0 has board width
+					#t0 has board width
 	
 	mul	$t0, $t0, $a0
 	add	$t0, $t0, $a1
@@ -666,22 +663,22 @@ read_input:
 	sw	$ra, 4($sp)
 	sw	$s0, 0($sp)
 
-	#read user input board bounds
+						#read user input board bounds
 	li	$v0, READ_INT
 	syscall
 	
-	#confirm starting board bounds
+						#confirm starting board bounds
 	li	$t0, 3
 	li	$t1, 9
 	la	$a0, board_input_error
 	blt	$v0, $t0, read_input_error
 	blt	$t1, $v0, read_input_error
 	
-	#write the borad bounds
+						#write the borad bounds
 	la	$t0, board_size
 	sb	$v0, 0($t0)
 	
-	move	$s0, $v0	#s0 will contian the board size
+	move	$s0, $v0			#s0 will contian the board size
 	
 	la	$a0, north_hints
 	move	$a1, $s0
@@ -718,27 +715,22 @@ read_input:
 	move	$a1, $s0
 	jal	load_fixed
 	beq	$v0, $zero, read_input_error
-	
 
-
-	#all input is good
-	li	$v0, 1		#return 1
+						#all input is good
+	li	$v0, 1				#return 1
 	j	read_input_end
 
 	
 read_input_error:
 	
 	jal	print_string
-	li	$v0, 0		#return 0
+	li	$v0, 0				#return 0
 
 read_input_end:
 	lw	$ra, 4($sp)
 	lw	$s0, 0($sp)
 	addi	$sp, $sp, 8
 	jr	$ra
-
-
-
 
 
 
@@ -768,7 +760,7 @@ read_fixed_loop:
 
 	beq	$s1, $s0, load_fixed_done
 	
-	#load x
+							#load x
 	li	$v0, READ_INT
 	syscall
 	move	$t0, $v0
@@ -776,7 +768,7 @@ read_fixed_loop:
 	blt	$t0, $zero, size_fixed_error
 	blt	$s2, $t0, size_fixed_error
 	
-	#load y
+							#load y
 	li	$v0, READ_INT
 	syscall
 	move	$t1, $v0
@@ -784,7 +776,7 @@ read_fixed_loop:
 	blt	$t1, $zero, size_fixed_error
 	blt	$s2, $t1, size_fixed_error
 	
-	#load value
+							#load value
 	li	$v0, READ_INT
 	syscall
 	move	$t2, $v0
@@ -818,12 +810,6 @@ load_fixed_done:
 	addi	$sp, $sp, 20
 	jr	$ra
 
-
-
-
-
-
-	
 
 #
 # Name: load_hints
@@ -877,10 +863,6 @@ load_hints_done:
 	addi	$sp, $sp, 16
 	jr	$ra
 	
-	
-	
-	
-
 #####################################################
 #               Print functions                     #
 #####################################################
@@ -945,7 +927,6 @@ print_board_loop_col_done:
 	move	$a1, $s2
 	jal	print_y_hint
 	
-	#addi	$s1, $s1, 1
 	addi	$s2, $s2, 1
 	
 	j	print_board_loop_row
@@ -967,7 +948,6 @@ print_board_done:
 	lw	$s0, 0($sp)
 	addi	$sp, $sp, 20
 	jr	$ra
-
 
 #
 # Name: Print break row
@@ -1029,8 +1009,6 @@ print_y_hint:
 	addi	$sp, $sp, 4
 	jr	$ra
 
-
-
 #
 # Name: prints x axis hints
 #
@@ -1085,8 +1063,6 @@ print_string:
 
 	jr	$ra
 
-
-
 #
 # Name: print_number_exclude
 #    prints numbers excluding zero
@@ -1123,7 +1099,5 @@ print_number:
 	syscall
 
 	jr	$ra
-
-
 
 
