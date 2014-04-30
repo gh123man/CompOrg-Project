@@ -39,7 +39,7 @@ spacess:
 spaces:
 	.asciiz " "
 logo:
-	.asciiz "*******************\n**  SKYSCRAPERS  **\n*******************\n"
+	.asciiz "\n*******************\n**  SKYSCRAPERS  **\n*******************\n"
 init_puzzle:
 	.asciiz "\nInitial Puzzle\n\n"
 final_puzzle:
@@ -50,11 +50,11 @@ impossible:
 board_input_error:
 	.asciiz "\nInvalid board size, Skyscrapers terminating\n"
 illegal_input_error:
-	.asciiz "Illegal input value, Skyscrapers terminating\n"
+	.asciiz "\nIllegal input value, Skyscrapers terminating\n"
 fixed_number_input_error:
-	.asciiz "Invalid number of fixed values, Skyscrapers terminating\n"
+	.asciiz "\nInvalid number of fixed values, Skyscrapers terminating\n"
 fixed_input_error:
-	.asciiz "Illegal fixed input values, Skyscrapers terminating\n"
+	.asciiz "\nIllegal fixed input values, Skyscrapers terminating\n"
 	
 	.text
 	.align	2
@@ -72,11 +72,12 @@ main:
 	sw	$ra, 4($sp)
 	sw	$s0, 0($sp)
 	
+	la	$a0, logo
+	jal	print_string
+	
 	jal	read_input
 	beq	$v0, $zero, main_done	#end if it returned false.
 	
-	la	$a0, logo
-	jal	print_string
 	
 	la	$a0, init_puzzle
 	jal	print_string
@@ -101,6 +102,8 @@ main:
 	jal	print_string
 	
 	jal	print_board
+	la	$a0, new_line_char
+	jal	print_string
 	
 	j	main_done
 	
@@ -402,20 +405,12 @@ continue_check_loop:
 
 generic_check_loop_done_row:
 	
-	#move	$a0, $s5
-	#jal	print_number
-	#move	$a0, $s7
-	#jal	print_number
-	#la	$a0, new_line_char
-	#jal	print_string
-	
-	blt	$s5, $s7, check_fail	#fail
+	beq	$s5, $s7, generic_check_loop_found_zero
+	j	check_fail
 	
 generic_check_loop_found_zero:
 	
 	addi	$s0, $s0, 1
-	#la	$a0, new_line_char
-	#jal	print_string
 	
 	addi	$s3, $s3, 1
 	j	generic_check_loop_col
@@ -716,7 +711,7 @@ read_input:
 	li	$v0, READ_INT
 	syscall
 	
-	la	$a0, fixed_input_error
+	la	$a0, fixed_number_input_error
 	blt	$v0, $zero, read_input_error
 	
 	move	$a0, $v0
@@ -1053,7 +1048,7 @@ print_x_hints:
 
 	li	$t0, 0
 	
-	la	$a0, spacess
+	la	$a0, spaces
 	jal	print_string
 
 print_x_hints_loop: 
@@ -1063,12 +1058,12 @@ print_x_hints_loop:
 	la	$a0, spacess
 	jal	print_string
 
-	lb	$a0, 0($t2)
-	
-	jal	print_number_exclude
-
 	la	$a0, spaces
 	jal	print_string
+	
+	lb	$a0, 0($t2)
+	jal	print_number_exclude
+
 	
 	addi	$t2, $t2, 1
 	addi	$t0, $t0, 1
