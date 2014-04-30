@@ -38,6 +38,14 @@ spacess:
 	.asciiz "  "
 spaces:
 	.asciiz " "
+logo:
+	.asciiz "*******************\n**  SKYSCRAPERS  **\n*******************\n"
+init_puzzle:
+	.asciiz "\nInitial Puzzle\n\n"
+final_puzzle:
+	.asciiz "final Puzzle\n\n"
+impossible:
+	.asciiz "Impossible Puzzle\n\n"
 	
 board_input_error:
 	.asciiz "\nInvalid board size, Skyscrapers terminating\n"
@@ -67,7 +75,16 @@ main:
 	jal	read_input
 	beq	$v0, $zero, main_done	#end if it returned false.
 	
+	la	$a0, logo
+	jal	print_string
+	
+	la	$a0, init_puzzle
+	jal	print_string
+	
 	jal	print_board
+	
+	la	$a0, new_line_char
+	jal	print_string
 	
 	
 	la	$a0, board
@@ -78,8 +95,20 @@ main:
 	
 	jal	eval
 	
+	beq	$v0, $zero, solve_fail
+	
+	la	$a0, final_puzzle
+	jal	print_string
+	
 	jal	print_board
-
+	
+	j	main_done
+	
+solve_fail:
+	
+	la	$a0, impossible
+	jal	print_string
+	
 main_done:
 	lw	$ra, 4($sp)
 	lw	$s0, 0($sp)
