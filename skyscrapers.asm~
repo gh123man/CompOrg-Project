@@ -9,8 +9,6 @@ EXIT = 10
 	.data
 	.align	0
 
-
-
 board_size:
 	.byte	0
 board:
@@ -24,9 +22,6 @@ east_hints:
 west_hints:
 	.space	32
 
-
-here_str:
-	.asciiz "HERE!\n"
 board_row_break_part:
 	.asciiz "+---"
 plus_char_break:
@@ -39,8 +34,6 @@ board_space_back:
 	.asciiz " |\n"
 new_line_char:
 	.asciiz "\n"
-spacesss:
-	.asciiz "   "
 spacess:
 	.asciiz "  "
 spaces:
@@ -54,7 +47,6 @@ fixed_number_input_error:
 	.asciiz "Invalid number of fixed values, Skyscrapers terminating\n"
 fixed_input_error:
 	.asciiz "Illegal fixed input values, Skyscrapers terminating\n"
-	
 	
 	.text
 	.align	2
@@ -78,7 +70,6 @@ main:
 	jal	print_board
 	
 	
-	
 	la	$a0, board
 	li	$a1, 0
 	la	$t0, board_size
@@ -87,23 +78,17 @@ main:
 	
 	jal	eval
 	
+	#la	$t0, board_size
+	#lb	$a2, 0($t0)
 	
-	#    a0: hint_pointer
-	#    a1: index_funct_pointer
-	#    a2: board_size
-	#
-	#la	$a0, north_hints
-	#la	$a1, get_next_north
-	#jal	generic_check_board
-	
+	#li	$a0, -1
+	#li	$a1, 0
+	#jal	get_next_south
 	#move	$a0, $v0
 	#jal	print_number
 	
 	#debug
 	jal	print_board
-	
-	
-	
 
 main_done:
 	lw	$ra, 4($sp)
@@ -152,11 +137,14 @@ eval:
 	
 	#fixed found if here
 	
-	bne	$s1, $s3, no_last_fixed_space		#if its the last fixed space, continue
+	addi	$t3, $s3, -1
+	bne	$s1, $t3, no_last_fixed_space		#if its the last fixed space, continue
 	
+	
+	#here it is the last fixed space
 	jal	validate_board
-	move	$s6, $v0
-	#v0 is set if valid
+	
+	#if v0 is 0, bad. if not good
 	
 	j	eval_end
 
@@ -166,9 +154,10 @@ no_last_fixed_space:
 	addi	$a1, $s1, 1				#tick counter
 	move	$a2, $s2				
 	move	$a3, $s3
+	move	$v0, $zero
 	
 	jal	eval					#recurse
-
+	
 	j	eval_end
 
 eval_not_found_fixed:
@@ -182,15 +171,13 @@ eval_loop:
 	
 	sb	$s4, 0($s0)				#write to board
 	jal	validate_board				#validate
-	move	$s6, $v0
 	
-	#debug
-	jal	print_board
+	beq	$v0, $zero, eval_loop_bottom		#branch if bad place
 	
-	beq	$s6, $zero, eval_loop_bottom		#branch if bad place
+	addi	$t3, $s3, -1
+	bne	$s1, $t3, not_last_place
 	
-	bne	$s1, $s3, not_last_place
-	
+	#here it is the last place and v0 is 1 so return 1
 	j	eval_end
 	
 	
@@ -199,12 +186,16 @@ not_last_place:
 	addi	$a1, $s1, 1				#tick counter
 	move	$a2, $s2				
 	move	$a3, $s3
+	move	$v0, $zero
 	
 	jal	eval					#recurse
 	
-	bne	$s6, $zero, eval_end
+	beq	$v0, $zero, eval_loop_bottom
+	
+	j	eval_end
 	
 eval_loop_bottom:
+	
 	sb	$zero, 0($s0)				#rest board locaiton
 	addi	$s4, $s4, 1				#tick
 	j	eval_loop
@@ -213,11 +204,7 @@ eval_loop_bottom:
 eval_loop_done:
 	j	eval_end
 	
-	
-
-
 eval_end:
-	move	$v0, $s6
 	
 	lw	$ra, 28($sp)
 	lw	$s6, 24($sp)
@@ -245,46 +232,32 @@ eval_end:
 #
 #
 validate_board:
-	addi	$sp, $sp, -32
-	sw	$ra, 28($sp)
-	sw	$s6, 24($sp)
-	sw	$s5, 20($sp)
-	sw	$s4, 16($sp)
-	sw	$s3, 12($sp)
-	sw	$s2, 8($sp)
-	sw	$s1, 4($sp)
+	addi	$sp, $sp, -8
+	sw	$ra, 4($sp)
 	sw	$s0, 0($sp)
 	
-	
-	
-	
-	#    a0: hint_pointer
-	#    a1: index_funct_pointer
-	#    a2: board_size
-	#
-	la	$a0, north_hints
-	la	$a1, get_next_north
-	
 	la	$t0, board_size
-	lb	$a2, 0($t0)
+	lb	$s0, 0($t0)
+	
+	
+	la	$a0, south_hints
+	la	$a1, get_next_south
+	move	$a2, $s0
 	
 	jal	generic_check_board
 	
+	bne	$v0, $zero, done_validate
 	
-	lw	$ra, 28($sp)
-	lw	$s6, 24($sp)
-	lw	$s5, 20($sp)
-	lw	$s4, 16($sp)
-	lw	$s3, 12($sp)
-	lw	$s2, 8($sp)
-	lw	$s1, 4($sp)
+	
+done_validate:
+	lw	$ra, 4($sp)
 	lw	$s0, 0($sp)
-	addi	$sp, $sp, 32
+	addi	$sp, $sp, 8
 	jr	$ra
 
 
 #
-# Name: get_next_north
+# Name: generic_check_board
 #
 # Arguments:
 #    a0: hint_pointer
@@ -318,11 +291,15 @@ generic_check_loop_col:
 	
 	
 	li	$s4, 0			#row counter
-	li	$s5, 0			#last tracker
+	li	$s5, 0			#height counter
+	li	$t5, 0			#last building
 	
 	lb	$s7, 0($s0)		#current hint
 	
 generic_check_loop_row:
+
+	#if next is greater, add to counter. if counter is == to hint, good. 
+	
 	
 	beq	$s7, $zero, generic_check_loop_done_row		#no hint, pass
 
@@ -333,22 +310,31 @@ generic_check_loop_row:
 	
 	addi	$a0, $s4, -1		#backup one
 	move	$a1, $s3
+	move	$a2, $s2		#alwas load boar size even though north and west dont need
+	
+	addi	$sp, $sp, -4		#have to save restore $t5
+	sw	$t5, 0($sp)
+	
 	jalr	$s1			#call indexer funct
+	
+	lw	$t5, 0($sp)
+	addi	$sp, $sp, 4
 	
 	move	$t2, $v0		#set cur
 	
 	
-	beq	$v0, $zero, generic_check_loop_done_row		#found zero, not finished, valid
+	beq	$t2, $zero, generic_check_loop_found_zero	#found zero, not finished, valid
 	
+	addi	$t6, $t5, 1
+	blt	$t2, $t6, pass_add
 	
-	blt	$s5, $t2, continue_check_loop
+	addi	$s5, $s5, 1					#add to new if its last
+	move	$t5, $t2					#set as new greatest
+	move	$a0, $t5
 	
-	addi	$t1, $s7, 1
-	beq	$t1, $s4, generic_check_loop_done_row		#hit hint bound
-	
-	############### fail #################
-	li	$s6, 0				#reutrn 0
-	j	generic_check_loop_done_col	#break all loops
+pass_add:
+
+	j	continue_check_loop
 	
 continue_check_loop:
 	
@@ -356,21 +342,37 @@ continue_check_loop:
 	#move	$a0, $v0	#debu
 	#jal	print_number	#devg
 	
-	move	$s5, $t2		#last = current
 	
-	addi	$s0, $s0, 1
 	addi	$s4, $s4, 1
 	j	generic_check_loop_row
 
 generic_check_loop_done_row:
 	
+	move	$a0, $s5
+	jal	print_number
+	move	$a0, $s7
+	jal	print_number
+	la	$a0, new_line_char
+	jal	print_string
+	bne	$s5, $s7, check_fail	#fail
+	
+generic_check_loop_found_zero:
+	
+	addi	$s0, $s0, 1
 	#la	$a0, new_line_char
 	#jal	print_string
 	
 	addi	$s3, $s3, 1
 	j	generic_check_loop_col
+	
+	############### fail #################
+check_fail:
+	li	$s6, 0				#reutrn 0
+	j	generic_check_loop_done_col	#break all loops	
 
 generic_check_loop_done_col:
+
+	jal	print_board
 
 	move	$v0, $s6	#reutrn result
 	
@@ -410,6 +412,73 @@ get_next_north:
 	addi	$sp, $sp, 4
 	jr	$ra
 
+#
+# Name: get_next_west
+#
+# Arguments:
+#    a0: row index
+#    a1: current_col_index
+#
+get_next_west:
+	addi	$sp, $sp, -4
+	sw	$ra, 0($sp)
+	
+	move	$t0, $a1
+	addi	$a1, $a0, 1
+	move	$a0, $t0
+	
+	jal	read_board
+	
+	lw	$ra, 0($sp)
+	addi	$sp, $sp, 4
+	jr	$ra
+
+#
+# Name: get_next_east
+#
+# Arguments:
+#    a0: row index
+#    a1: current_col_index
+#    a2: board size
+#
+get_next_east:
+	addi	$sp, $sp, -4
+	sw	$ra, 0($sp)
+	
+	move	$t0, $a1
+	addi	$a1, $a0, 1
+	sub	$a1, $a2, $a1
+	move	$a0, $t0
+	
+	jal	read_board
+	
+	lw	$ra, 0($sp)
+	addi	$sp, $sp, 4
+	jr	$ra
+	
+#
+# Name: get_next_south
+#
+# Arguments:
+#    a0: col index
+#    a1: current_row_index
+#    a2: board size
+#
+get_next_south:
+	addi	$sp, $sp, -4
+	sw	$ra, 0($sp)
+	
+	
+	addi	$a0, $a0, 1
+	
+	sub	$a0, $a2, $a0		#reverse index
+	addi	$a0, $a0, -1
+	
+	jal	read_board
+	
+	lw	$ra, 0($sp)
+	addi	$sp, $sp, 4
+	jr	$ra
 
 
 
@@ -461,30 +530,6 @@ write_board:
 	
 	jr	$ra
 	
-
-
-#
-# Name: get_<direction>_hint
-#
-# Arguments: 
-#     $a0: index
-#
-get_north_hint:
-	la	$a1, north_hints
-	j	get_hint
-get_south_hint:
-	la	$a1, south_hints
-	j	get_hint
-get_east_hint:
-	la	$a1, east_hints
-	j	get_hint
-get_west_hint:
-	la	$a1, west_hints
-	j	get_hint
-get_hint:
-	add	$a1, $a0, $a1
-	lb	$v0, 0($a1)
-	jr	$ra
 
 #####################################################
 #               Data Input Functions                #
@@ -917,14 +962,6 @@ print_string:
 
 	jr	$ra
 
-print_here:
-	li	$v0, PRINT_STRING
-	la	$a0, here_str
-	syscall
-
-	jr	$ra
-
-
 
 
 #
@@ -963,9 +1000,6 @@ print_number:
 	syscall
 
 	jr	$ra
-
-
-
 
 
 
