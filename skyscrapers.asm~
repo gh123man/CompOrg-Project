@@ -78,16 +78,6 @@ main:
 	
 	jal	eval
 	
-	#la	$t0, board_size
-	#lb	$a2, 0($t0)
-	
-	#li	$a0, -1
-	#li	$a1, 0
-	#jal	get_next_south
-	#move	$a0, $v0
-	#jal	print_number
-	
-	#debug
 	jal	print_board
 
 main_done:
@@ -127,9 +117,6 @@ eval:
 	move	$s1, $a1				#save locaiton counter
 	move	$s2, $a2				#save board bound
 	move	$s3, $a3				#save board length
-	
-	#debug
-	#jal	print_board
 	
 	lb	$s5, 0($s0)				#save current value
 	
@@ -264,6 +251,14 @@ validate_board:
 	
 	beq	$v0, $zero, done_validate
 	
+	la	$a0, west_hints
+	la	$a1, get_next_west
+	move	$a2, $s0
+	
+	jal	generic_check_board
+	
+	beq	$v0, $zero, done_validate
+	
 	
 done_validate:
 	lw	$ra, 4($sp)
@@ -310,23 +305,22 @@ generic_check_loop_col:
 	li	$s5, 0			#height counter
 	li	$t5, 0			#last building
 	
+	#check result
+	
 	lb	$s7, 0($s0)		#current hint
 	
 generic_check_loop_row:
 
-	#if next is greater, add to counter. if counter is == to hint, good. 
-	
 	
 	beq	$s7, $zero, generic_check_loop_done_row		#no hint, pass
 
 	beq	$s2, $s4, generic_check_loop_done_row		#normal loop end
 	
-	################### Main logic ########################
-	
-	
 	addi	$a0, $s4, -1		#backup one
 	move	$a1, $s3
 	move	$a2, $s2		#alwas load boar size even though north and west dont need
+	
+	
 	
 	addi	$sp, $sp, -4		#have to save restore $t5
 	sw	$t5, 0($sp)
@@ -337,6 +331,26 @@ generic_check_loop_row:
 	addi	$sp, $sp, 4
 	
 	move	$t2, $v0		#set cur
+	
+	
+	
+	move	$a0, $s3		#load col number
+	move	$a1, $s1		#funct pointer
+	move	$a2, $t2		#val
+	move	$a3, $s2		#board size
+	
+	addi	$sp, $sp, -8		#have to save restore stuff
+	sw	$t2, 4($sp)
+	sw	$t5, 0($sp)
+	
+	jal	repeat_check
+	
+	lw	$t5, 0($sp)
+	lw	$t2, 4($sp)
+	addi	$sp, $sp, 8
+	
+	bne	$v0, $zero, check_fail
+	
 	
 	
 	beq	$t2, $zero, generic_check_loop_found_zero	#found zero, not finished, valid
@@ -353,11 +367,6 @@ pass_add:
 	j	continue_check_loop
 	
 continue_check_loop:
-	
-	########################################################
-	#move	$a0, $v0	#debu
-	#jal	print_number	#devg
-	
 	
 	addi	$s4, $s4, 1
 	j	generic_check_loop_row
@@ -389,8 +398,6 @@ check_fail:
 
 generic_check_loop_done_col:
 
-	jal	print_board
-
 	move	$v0, $s6	#reutrn result
 	
 	lw	$ra, 32($sp)
@@ -405,6 +412,83 @@ generic_check_loop_done_col:
 	addi	$sp, $sp, 36
 	jr	$ra
 	
+	
+#
+# Name: repeat check
+#
+# Arguments:
+#    a0: col number
+#    a1: get_next_pointer
+#    a2: val
+#    a3: board_size
+#	
+repeat_check:
+	addi	$sp, $sp, -36
+	sw	$ra, 32($sp)
+	sw	$s7, 28($sp)
+	sw	$s6, 24($sp)
+	sw	$s5, 20($sp)
+	sw	$s4, 16($sp)
+	sw	$s3, 12($sp)
+	sw	$s2, 8($sp)
+	sw	$s1, 4($sp)
+	sw	$s0, 0($sp)
+
+	move	$s0, $a0	#col
+	move	$s1, $a1	#funct
+	move	$s2, $a2	#val
+	move	$s3, $a3	#board_size
+	
+	li	$s4, 0		#counter
+	li	$s5, 0		#false by default
+	li	$s6, 0		#rpt counter
+	
+repeat_check_loop:
+	
+	beq	$s4, $s3, repeat_check_loop_done
+	
+	addi	$a0, $s4, -1		#backup one to get next
+	move	$a1, $s0		#col
+	move	$a2, $s3		#alwas load boar size even though north and west dont need
+	
+	jalr	$s1			#call indexer funct
+	
+	beq	$v0, $zero, repeat_check_loop_done
+	bne	$v0, $s2, repeat_check_loop_bottom
+	
+	#match_found
+
+	addi	$s6, $s6, 1
+	
+	li	$t2, 2
+	beq	$s6, $t2, repeat_found
+	
+	
+repeat_check_loop_bottom:
+	addi	$s4, $s4, 1
+	j	repeat_check_loop
+	
+repeat_found:
+	
+	li	$s5, 1
+
+repeat_check_loop_done:
+	
+	
+	move	$v0, $s5
+	
+	lw	$ra, 32($sp)
+	lw	$s7, 28($sp)
+	lw	$s6, 24($sp)
+	lw	$s5, 20($sp)
+	lw	$s4, 16($sp)
+	lw	$s3, 12($sp)
+	lw	$s2, 8($sp)
+	lw	$s1, 4($sp)
+	lw	$s0, 0($sp)
+	addi	$sp, $sp, 36
+	jr	$ra
+
 	
 
 #
