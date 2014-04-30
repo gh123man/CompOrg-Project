@@ -240,13 +240,37 @@ validate_board:
 	lb	$s0, 0($t0)
 	
 	
+	la	$a0, north_hints
+	la	$a1, get_next_north
+	move	$a2, $s0
+	
+	jal	generic_check_board
+	
+	beq	$v0, $zero, done_validate
+	
 	la	$a0, south_hints
 	la	$a1, get_next_south
 	move	$a2, $s0
 	
 	jal	generic_check_board
 	
-	bne	$v0, $zero, done_validate
+	beq	$v0, $zero, done_validate
+	
+	la	$a0, east_hints
+	la	$a1, get_next_east
+	move	$a2, $s0
+	
+	jal	generic_check_board
+	
+	beq	$v0, $zero, done_validate
+	
+	la	$a0, west_hints
+	la	$a1, get_next_west
+	move	$a2, $s0
+	
+	jal	generic_check_board
+	
+	beq	$v0, $zero, done_validate
 	
 	
 done_validate:
@@ -348,13 +372,14 @@ continue_check_loop:
 
 generic_check_loop_done_row:
 	
-	move	$a0, $s5
-	jal	print_number
-	move	$a0, $s7
-	jal	print_number
-	la	$a0, new_line_char
-	jal	print_string
-	bne	$s5, $s7, check_fail	#fail
+	#move	$a0, $s5
+	#jal	print_number
+	#move	$a0, $s7
+	#jal	print_number
+	#la	$a0, new_line_char
+	#jal	print_string
+	
+	blt	$s5, $s7, check_fail	#fail
 	
 generic_check_loop_found_zero:
 	
@@ -389,9 +414,6 @@ generic_check_loop_done_col:
 	jr	$ra
 	
 	
-	
-	
-
 
 #
 # Name: get_next_north
@@ -448,6 +470,7 @@ get_next_east:
 	move	$t0, $a1
 	addi	$a1, $a0, 1
 	sub	$a1, $a2, $a1
+	addi	$a1, $a1, -1
 	move	$a0, $t0
 	
 	jal	read_board
