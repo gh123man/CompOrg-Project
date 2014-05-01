@@ -42,7 +42,8 @@ spacess:
 spaces:
 	.asciiz " "
 logo:
-	.asciiz "\n*******************\n**  SKYSCRAPERS  **\n*******************\n"
+	.ascii "\n*******************\n**  SKYSCRAPERS  **\n******************"
+	.asciiz "*\n"
 init_puzzle:
 	.asciiz "\nInitial Puzzle\n\n"
 final_puzzle:
@@ -344,7 +345,7 @@ generic_check_loop_row:
 	
 	beq	$s7, $zero, generic_check_loop_done_row		#no hint, pass
 
-	beq	$s2, $s4, generic_check_loop_done_row		#normal loop end
+	beq	$s2, $s4, generic_check_loop_done_row		#loop end
 	
 	addi	$a0, $s4, -1		#backup one
 	move	$a1, $s3
@@ -388,7 +389,7 @@ generic_check_loop_row:
 	addi	$t6, $t5, 1
 	blt	$t2, $t6, pass_add
 	
-	addi	$s5, $s5, 1					#add new if last
+	addi	$s5, $s5, 1					#add if last
 	move	$t5, $t2					#set greatest
 	move	$a0, $t5
 	
@@ -415,7 +416,7 @@ generic_check_loop_found_zero:
 	
 check_fail:
 	li	$s6, 0						#reutrn 0
-	j	generic_check_loop_done_col			#break all loops	
+	j	generic_check_loop_done_col			#break loops	
 
 generic_check_loop_done_col:
 

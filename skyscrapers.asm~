@@ -42,7 +42,8 @@ spacess:
 spaces:
 	.asciiz " "
 logo:
-	.asciiz "\n*******************\n**  SKYSCRAPERS  **\n*******************\n"
+	.ascii "\n*******************\n**  SKYSCRAPERS  **\n******************"
+	.asciiz "*\n"
 init_puzzle:
 	.asciiz "\nInitial Puzzle\n\n"
 final_puzzle:
